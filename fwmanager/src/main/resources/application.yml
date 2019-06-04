@@ -1,0 +1,12 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 10MB
+      max-request-size: 20MB
+#Database
+  datasource:
+    url: jdbc:postgresql://16.8.35.228:5432/fwmanager
+    username: browndwarf
+    password: browndwarf

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script>
+function waitAndNextStep(){
+	alert('Uploading New Firmware...');
+	
+	location.href='./targetList';
+}
+
+</script>
+<body>
+	<h1>Register New FW</h1>
+     <div>
+     	<h6>Select Tag Type</h6>
+		<select name="type">
+		    <option value="2.9 Mono">2.9 Mono</option>
+		    <option value="2.9 Red">2.9 Red</option>
+		</select>
+     </div>	
+     <div>
+     	<h6>Select New FW File</h6>
+		<form id="singleUploadForm" name="singleUploadForm" enctype="multipart/form-data" method="post" action="/file/upload" >
+		    <input id="singleFileUploadInput" type="file" name="file" />
+		    <button type="submit">Submit</button>
+		</form>
+		
+     </div>
+     <div>
+         <div id="singleFileUploadError"></div>
+         <div id="singleFileUploadSuccess"></div>
+     </div>
+     <p><br></p>
+     <div>
+      	<input id="targetListBtn" type="button" value="Upload" onClick="waitAndNextStep();">
+     </div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script>
+function arrangBtnClick() {
+	
+	if (document.getElementById("arrangeBtn").value == 'Arrange'){
+		document.getElementById("upt1").value='01:00';
+		document.getElementById("upt2").value='02:00';
+		document.getElementById("arrangeBtn").value='Confirm';
+	}else{
+		location.href='./targetList?type=2';
+	}
+
+	
+}
+</script>
+<body>
+	<h1>Auto Reservation</h1>
+	<h2>Station : XYZ</h2>
+              <table id="gwlist" style="border:solid 1px; border-collapse: collapse"> <!--  class="table table-bordered table-striped"> -->
+                <thead>
+                <tr style="background-color: antiquewhite">
+                  <th style="border:solid 1px;">NAME</th>
+                  <th style="border:solid 1px;">IP</th>
+                  <th style="border:solid 1px;">MAC</th>
+                  <th style="border:solid 1px;">Update Time</th>
+                </tr>
+                </thead>
+                <tbody>
+              		<tr>
+	                  <!-- <td><a th:href="@{/samplehome/board/read(bno=${boardVO.bno})}" th:text="${boardVO.title}">TITLE</a></td> -->
+	                  <td style="border:solid 1px;">GW_1</td>
+	                  <td style="border:solid 1px;">10.168.15.1</td>
+	                  <td style="border:solid 1px;">DD:00:01:02:23:04</td>
+					 	<td style="border:solid 1px;"><input id="upt1" value="--:--" /></td>
+	                </tr>
+              		<tr>
+	                  <!-- <td><a th:href="@{/samplehome/board/read(bno=${boardVO.bno})}" th:text="${boardVO.title}">TITLE</a></td> -->
+	                  <td style="border:solid 1px;">GW_2</td>
+	                  <td style="border:solid 1px;">10.168.15.1</td>
+	                  <td style="border:solid 1px;">DF:00:01:02:34:04</td>
+					  <td style="border:solid 1px;"><input id="upt2" value="--:--" /></td>
+	                </tr>
+                </tbody>
+              </table>
+     <div>
+     	<h6>Update Date</h6>
+     	<input type="date" id="start" value="2019-06-01" min="2019-06-01" max="2019-06-01"/>
+     </div>
+     <div>
+     	<h6>Update Time period</h6>
+     	<input type="time" name="startTime" value="01:00">
+     	<input type="time" name="endtime" value="05:00">
+     </div>
+     <div>
+     	<h6>Arrange Update Time</h6>
+     	<input id="arrangeBtn" type="button" value="Arrange" onClick="arrangBtnClick();">
+     </div>
+</body>
+</html>
