@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration scan="true" scanPeriod="10 seconds" >
+	<property scope="local" name="logDir" value="${aims.root.path}/log" />
+	<property scope="local" name="logRollingDir" value="${aims.root.path}/log/plugin" />
+	<property scope="local" name="interfaceFileName" value="huarunplugin" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<!-- <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}]%highlight([%-5level])[%green(${PID:-}) : %-15.15thread][%cyan(%-60logger{0})] %msg%n</pattern>-->
+			<pattern>[%d{HH:mm:ss.SSS}]%highlight([%-5level])[%green(%-15.15thread) / %cyan(%-60logger{0})] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>./logs/browndwarf_galaxy.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	      <fileNamePattern>./logs/older/browndwarf_galaxy.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+	      <maxHistory>14</maxHistory>
+	      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+	        <maxFileSize>10MB</maxFileSize>
+	      </timeBasedFileNamingAndTriggeringPolicy>
+	    </rollingPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>[%d{HH:mm:ss.SSS}]%highlight([%-5level])[%green(%-15.15thread) / %cyan(%-60logger{0})] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+
+ 
+    <logger name="com.solum.requestdistributor.service" level="debug" additivity="false">
+    	<appender-ref ref="STDOUT" />
+    </logger>	
+
+	
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="fileAppender" /> 
+	</root>
+</configuration>
