@@ -32,3 +32,4 @@ HELP.md
 .vscode/
 /bin/
 /gradle/
+/logs/
