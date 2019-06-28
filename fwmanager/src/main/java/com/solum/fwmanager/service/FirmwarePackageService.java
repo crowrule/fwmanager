@@ -10,6 +10,9 @@ import com.solum.fwmanager.dto.FirmwarePackageDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
 import com.solum.fwmanager.repository.FirmwarePackageRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class FirmwarePackageService {
 
@@ -24,25 +27,46 @@ public class FirmwarePackageService {
 		
 		FirmwarePackageDTO response = new FirmwarePackageDTO(ret.get().getType(),
 				ret.get().getAttribute(),
-				ret.get().getSiteCode3(), 
+				ret.get().getSiteCode(), 
 				ret.get().getJobNumber(), 
 				ret.get().getFwVersion(), 
 				ret.get().getTagClass(), 
 				ret.get().getMode(), 
-				ret.get().getFile_Name());
+				ret.get().getFileName());
 		
 		return response;
 		
 	}
 	
-	public	Long registerFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
+	public	int registerFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
 		
-		FirmwarePackage newOne = firmwarePackage.toEntity();
+		FirmwarePackage fwEntity = firmwarePackage.toEntity();
+		int	ret = 0;
 		
-		Long id = firmwarePackageRepository.saveAndFlush(newOne).getId().getMostSignificantBits();
+		Optional<FirmwarePackage> oldFW = firmwarePackageRepository.findByTypeAndFwVersion(
+											firmwarePackage.getType(), 
+											firmwarePackage.getFwVersion());
 		
-		return id;
+		// Update the existed record
+		if (oldFW.isPresent()) {
+			ret = 1;
+			fwEntity.setId(oldFW.get().getId());
+		}else ret = 2;
 		
+		Long id = firmwarePackageRepository.saveAndFlush(fwEntity).getId();
+		
+		log.debug("Save or Update FirmwaerPackage ID : {}", id);
+		
+		return ret;
+		
+	}
+	
+	// TODO : Refine Validation Rule 
+	public boolean validateFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
+		
+		// TODO : is the FW file existed at the place pointed from FilePath.
+		
+		return true;
 	}
 	
 }

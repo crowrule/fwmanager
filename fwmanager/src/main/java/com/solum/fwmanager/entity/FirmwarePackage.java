@@ -1,6 +1,7 @@
 package com.solum.fwmanager.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -8,6 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -26,15 +30,14 @@ public class FirmwarePackage implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private UUID	id;	
+	private Long	id;	
 	
 	private String	type;
 	
 	private String	attribute;
 	
-	private	String	siteCode3;
+	private	String	siteCode;
 	
-	@Column(name="jobnum")
 	private	int	jobNumber;
 	
 	private	String	fwVersion;
@@ -43,17 +46,24 @@ public class FirmwarePackage implements Serializable {
 	
 	private short	mode;
 	
-	private	String	file_Name;
+	private	String	fileName;
+	
+	@Column(updatable=false)
+	@CreationTimestamp
+	private LocalDateTime	createdTime;
+	
+	@UpdateTimestamp
+	private LocalDateTime	updatedTime;
 	
 	@Builder
-	public FirmwarePackage(String type, String attribute, String siteCode3, int jobNumber, String fwVersion, short tagClass, short mode, String	file_Name) {
+	public FirmwarePackage(String type, String attribute, String siteCode, int jobNumber, String fwVersion, short tagClass, short mode, String	fileName) {
 		this.type = type;
 		this.attribute = attribute;
-		this.siteCode3 = siteCode3;
+		this.siteCode = siteCode;
 		this.jobNumber = jobNumber;
 		this.fwVersion = fwVersion;
 		this.tagClass = tagClass;
 		this.mode = mode;
-		this.file_Name = file_Name;
+		this.fileName = fileName;
 	}	
 }

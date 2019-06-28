@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <preConditions>
+        <runningAs username="browndwarf"/>
+    </preConditions>
+
+    <changeSet id="1" author="browndwarf">
+        <createTable tableName="firmwarepackage">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="attribute" type="varchar(50)">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="filename" type="varchar(255)">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="fwversion" type="varchar(10)"/>
+            <column name="jobnumber" type="INT"/>
+            <column name="mode" type="smallint"/>
+            <column name="tagclass" type="smallint"/>
+            <column name="sitecode" type="varchar(10)"/>
+            <column name="type" type="varchar(10)"/>
+            <column name="createdTime" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="updatedTime" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>  
+    
+</databaseChangeLog>

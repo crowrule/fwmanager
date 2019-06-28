@@ -14,15 +14,18 @@ import lombok.Setter;
 @Getter @Setter
 public class FirmwarePackageDTO {
 
+	// TODO : Check how to retrieve these information
 	@ApiModelProperty
 	private String	type;
 	
-	@ApiModelProperty
+	// TODO : Check how to retrieve these information
+	@ApiModelProperty(value="2 digits to identify tag type",example="40,41,4A")
 	private String	attribute;
 	
-	@ApiModelProperty
+	@ApiModelProperty(value="4 digits to access tag")
 	private	String	siteCode;
 	
+	// TODO : Check how to retrieve these information
 	@ApiModelProperty
 	private	int	jobNumber;
 	
@@ -43,12 +46,12 @@ public class FirmwarePackageDTO {
 		return FirmwarePackage.builder()
 				.type(type)
 				.attribute(attribute)
-				.siteCode3(siteCode)
+				.siteCode(siteCode)
 				.jobNumber(jobNumber)
 				.fwVersion(fwVersion)
 				.tagClass(tagClass)
 				.mode(mode)
-				.file_Name(fileName)
+				.fileName(fileName)
 				.build();
 	}
 	

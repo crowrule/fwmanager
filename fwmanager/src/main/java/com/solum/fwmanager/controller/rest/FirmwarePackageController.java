@@ -1,4 +1,4 @@
-package com.solum.fwmanager.controller;
+package com.solum.fwmanager.controller.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +29,26 @@ public class FirmwarePackageController {
 			@ApiResponse(code = 400, message = "Use wrong parameter.")
 			})
 	@PostMapping("/register")
-	public ResponseEntity<Long> registerReservation(@RequestBody FirmwarePackageDTO reqParam){
+	public ResponseEntity<String> registerReservation(@RequestBody FirmwarePackageDTO reqParam){
 		log.info("register firmware");
 		
-		Long id = firmwarePackageService.registerFirmwarePackage(reqParam);
+		// TODO : Create Super-Class which generate common 405 Error Message.
+		if (firmwarePackageService.validateFirmwarePackage(reqParam)) return ResponseEntity.badRequest().body("Invalid Parameter"); 
 		
-		if (id >= 0) return ResponseEntity.ok(id);
-		else return ResponseEntity.badRequest().body(-1L);
+		int	result  = firmwarePackageService.registerFirmwarePackage(reqParam);
+		
+		switch(result) {
+		case 1 : return ResponseEntity.ok(new StringBuilder("Successfully Update Existed Package for ")
+											.append(reqParam.getType())
+											.append(", version : ").append(reqParam.getFwVersion())
+											.toString());
+		case 2 : return ResponseEntity.ok(new StringBuilder("Successfully Register Firmware Package for ")
+											.append(reqParam.getType())
+											.append(", version : ").append(reqParam.getFwVersion())
+											.toString());
+		default : return ResponseEntity.badRequest().body("Invalid Parameter"); 
+		}
+
 	}
 	
 }
