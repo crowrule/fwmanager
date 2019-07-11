@@ -2,12 +2,15 @@ package com.solum.fwmanager.controller.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.solum.fwmanager.dto.FirmwarePackageDTO;
+import com.solum.fwmanager.service.CoreService;
 import com.solum.fwmanager.service.FirmwarePackageService;
 
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +25,10 @@ public class FirmwarePackageController {
 
 	@Autowired
 	FirmwarePackageService	firmwarePackageService;
+	
+	
+	@Autowired
+	CoreService	coreService;
 	
 	@ApiOperation(tags={"Package Management"}, value="Register a Update Package")
 	@ApiResponses(value = {
@@ -49,6 +56,13 @@ public class FirmwarePackageController {
 		default : return ResponseEntity.badRequest().body("Invalid Parameter"); 
 		}
 
+	}
+	
+	@GetMapping(value = "coretest")
+	public String coreTest() throws Exception {
+		String str =  new StringBuilder("Core GW Count : ").append(coreService.getGwCount()).toString();
+		
+		return str;
 	}
 	
 }

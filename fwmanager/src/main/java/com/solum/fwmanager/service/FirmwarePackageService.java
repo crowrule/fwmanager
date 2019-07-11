@@ -1,7 +1,6 @@
 package com.solum.fwmanager.service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FirmwarePackageService {
 
 	@Autowired
-	FirmwarePackageRepository<FirmwarePackage>	firmwarePackageRepository;
+	FirmwarePackageRepository	firmwarePackageRepository;
 	
 	public	FirmwarePackageDTO	getFirmwarePackageId(Long id) {
 		
