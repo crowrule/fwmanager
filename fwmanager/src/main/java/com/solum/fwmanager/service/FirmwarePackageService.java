@@ -46,7 +46,7 @@ public class FirmwarePackageService {
 											firmwarePackage.getType(), 
 											firmwarePackage.getFwVersion());
 		
-		// Update the existed record
+		// TODO : Refine the scenario for the existed record upload
 		if (oldFW.isPresent()) {
 			ret = 1;
 			fwEntity.setId(oldFW.get().getId());
