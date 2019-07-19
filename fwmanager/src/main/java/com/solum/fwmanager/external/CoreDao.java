@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.solum.fwmanager.dto.TagTypeInfoDTO;
 import com.solum.fwmanager.dto.TargetStationDTO;
+import com.solum.fwmanager.external.entity.OTATargetGateway;
 
 @Repository
 public class CoreDao {
@@ -99,4 +100,30 @@ public class CoreDao {
 	    
 	    return targetStationList;
 	}
+	
+	//TODO : Support MS-SQL
+	public List<OTATargetGateway> getTargetGWList(String stationCode){
+		EntityManager entityManager = emFactory.createEntityManager();
+		String sql = "SELECT AC.id, AC.mac_address AS macAddress, AC.ip_address AS ipAddress " + 
+				"FROM accesspoint AC " + 
+				"WHERE AC.station_id IN (SELECT id FROM station WHERE code=?) " +
+				"AND AC.state='CONNECTED'";
+		
+		Query nativeQuery = entityManager.createNativeQuery(sql);
+		nativeQuery.setParameter(1, stationCode);
+		
+		@SuppressWarnings("unchecked")
+		List<Object[]> resultList = nativeQuery.getResultList();
+	    List<OTATargetGateway> targetGWList = resultList.stream().map(gwInfo -> {
+	    	OTATargetGateway singleDTO = new OTATargetGateway();
+	    	
+	    	singleDTO.setId(((BigInteger)gwInfo[0]).longValue());
+	    	singleDTO.setMacAddress((String)gwInfo[1]);
+	    	singleDTO.setIpAddress((String)gwInfo[2]);
+    		
+            return singleDTO;
+	    }).collect(Collectors.toList());
+	    
+	    return targetGWList;
+	}	
 }

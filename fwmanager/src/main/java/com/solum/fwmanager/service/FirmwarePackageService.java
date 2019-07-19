@@ -18,7 +18,17 @@ public class FirmwarePackageService {
 	@Autowired
 	FirmwarePackageRepository	firmwarePackageRepository;
 	
-	public	FirmwarePackageDTO	getFirmwarePackageId(Long id) {
+	public	FirmwarePackage	getFirmwarePackagebyId(Long id) {
+		
+		Optional<FirmwarePackage> ret = firmwarePackageRepository.findById(id);
+		
+		if (!ret.isPresent()) return null;
+		else return ret.get();
+		
+	}
+	
+	
+	public	FirmwarePackageDTO	getFirmwarePackageDTObyId(Long id) {
 		
 		Optional<FirmwarePackage> ret = firmwarePackageRepository.findById(id);
 		
