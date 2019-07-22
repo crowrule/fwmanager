@@ -33,7 +33,7 @@ public class FirmwarePackageController {
 		log.info("register firmware");
 		
 		// TODO : Create Super-Class which generate common 405 Error Message.
-		if (firmwarePackageService.validateFirmwarePackage(reqParam)) return ResponseEntity.badRequest().body("Invalid Parameter"); 
+		if (!firmwarePackageService.validateFirmwarePackage(reqParam)) return ResponseEntity.badRequest().body("Invalid Parameter"); 
 		
 		int	result  = firmwarePackageService.registerFirmwarePackage(reqParam);
 		 
