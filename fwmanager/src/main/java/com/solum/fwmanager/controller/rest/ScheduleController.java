@@ -1,6 +1,7 @@
 package com.solum.fwmanager.controller.rest;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import com.solum.fwmanager.dto.OTAStationScheduleDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
 import com.solum.fwmanager.service.FirmwarePackageService;
 import com.solum.fwmanager.service.ScheduleArrangeService;
+import com.solum.fwmanager.service.ScheduleService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -33,6 +35,9 @@ public class ScheduleController {
 	
 	@Autowired
 	ScheduleArrangeService	scheduleArrangeService;
+	
+	@Autowired
+	ScheduleService	scheduleService;
 	
 	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
 	@ApiResponses(value = {
@@ -54,6 +59,21 @@ public class ScheduleController {
 		
 		return ResponseEntity.ok(res);
 		
+	}
+	
+	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully reserved."),
+			@ApiResponse(code = 400, message = "Use wrong parameter.")
+			})
+	@GetMapping("/otaschedule/{mac}")
+	public ResponseEntity<String> getOTAScheduleFromGWbyMac(@PathVariable String mac){
+		
+		// TODO ; The following 
+		LocalDateTime	ret =  scheduleService.getOTAScheduleByMac(mac);
+		
+		
+		return ResponseEntity.ok(ret.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 	}
 	
 	/*
