@@ -1,7 +1,5 @@
 package com.solum.fwmanager.dto;
 
-import java.time.LocalDateTime;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +10,7 @@ import lombok.Setter;
 public class CommonResponseDTO {
 
 	@ApiModelProperty
-	private long	responseCode;
+	private long responseCode;
 	
 	@ApiModelProperty
 	private String responseMessage;
