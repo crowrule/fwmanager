@@ -32,19 +32,21 @@ public class FirmwarePackage implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long	id;	
 	
-	private String	type;
-	
-	private String	attribute;
-	
-	private	String	siteCode;
+	private String	tagType;
 	
 	private	int	jobNumber;
 	
 	private	String	fwVersion;
 	
+	private short	compType;
+	
+	private int	compSize;
+	
+	private int decompSize;
+	
 	private short	tagClass;
 	
-	private short	mode;
+	private short	otaMode;
 	
 	private	String	fileName;
 	
@@ -56,14 +58,15 @@ public class FirmwarePackage implements Serializable {
 	private LocalDateTime	updatedTime;
 	
 	@Builder
-	public FirmwarePackage(String type, String attribute, String siteCode, int jobNumber, String fwVersion, short tagClass, short mode, String	fileName) {
-		this.type = type;
-		this.attribute = attribute;
-		this.siteCode = siteCode;
+	public FirmwarePackage(String tagType, int jobNumber, String fwVersion, short compType, int compSize, int decompSize, short tagClass, short otaMode, String	fileName) {
+		this.tagType = tagType;
 		this.jobNumber = jobNumber;
 		this.fwVersion = fwVersion;
+		this.compType = compType;
+		this.compSize = compSize;
+		this.decompSize = decompSize;
 		this.tagClass = tagClass;
-		this.mode = mode;
+		this.otaMode = otaMode;
 		this.fileName = fileName;
 	}	
 }

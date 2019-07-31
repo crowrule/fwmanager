@@ -20,7 +20,9 @@ public class CoreService {
 	}
 	
 	public	List<TagTypeInfoDTO> getTagTypeList(String stationCode) {
-		return coreDao.getInstalledTagTypeListByStation(stationCode);
+		
+		if (stationCode.isEmpty()) return coreDao.getInstalledAllTagTypeList();
+		else return coreDao.getInstalledTagTypeListByStation(stationCode);
 	}
 	
 	public	List<TargetStationDTO> getTargetStationList(String tagAttribute) {

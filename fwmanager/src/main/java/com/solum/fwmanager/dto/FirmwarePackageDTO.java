@@ -15,15 +15,14 @@ import lombok.Setter;
 public class FirmwarePackageDTO {
 
 	// TODO : Check how to retrieve these information
-	@ApiModelProperty
-	private String	type;
+	//@ApiModelProperty
+	//private String	type;
 	
-	// TODO : Check how to retrieve these information
-	@ApiModelProperty(value="2 digits to identify tag type",example="40,41,4A")
-	private String	attribute;
+	@ApiModelProperty(value="2 digits to identify tag type")
+	private String	tagType;
 	
-	@ApiModelProperty(value="4 digits to access tag")
-	private	String	siteCode;
+	//@ApiModelProperty(value="4 digits to access tag")
+	//private	String	siteCode;
 	
 	// TODO : Check how to retrieve these information
 	@ApiModelProperty
@@ -33,10 +32,19 @@ public class FirmwarePackageDTO {
 	private	String	fwVersion;
 	
 	@ApiModelProperty
+	private short compType;
+	
+	@ApiModelProperty
+	private int	compSize;
+	
+	@ApiModelProperty
+	private int decompSize;
+	
+	@ApiModelProperty
 	private short	tagClass;
 	
 	@ApiModelProperty
-	private short	mode;
+	private short	otaMode;
 	
 	@ApiModelProperty
 	private	String	fileName;
@@ -44,28 +52,31 @@ public class FirmwarePackageDTO {
 	@JsonIgnore
 	public FirmwarePackage toEntity() {
 		return FirmwarePackage.builder()
-				.type(type)
-				.attribute(attribute)
-				.siteCode(siteCode)
+				.tagType(tagType)
 				.jobNumber(jobNumber)
 				.fwVersion(fwVersion)
+				.compType(compType)
+				.compSize(compSize)
+				.decompSize(decompSize)
 				.tagClass(tagClass)
-				.mode(mode)
+				.otaMode(otaMode)
 				.fileName(fileName)
 				.build();
 	}
+	
 	
 	@JsonIgnore
 	public boolean equals(Object o) { 
 		FirmwarePackageDTO r2 = (FirmwarePackageDTO)o; 
 		
-		if (((this.type == null && r2.getType() == null) || this.type.equals(r2.getType()))
-			&& ((this.attribute == null && r2.getAttribute() == null) || this.attribute.equals(r2.getAttribute()))
-			&& ((this.siteCode == null && r2.getSiteCode() == null) || this.siteCode.equals(r2.getSiteCode()))
+		if (((this.tagType == null && r2.getTagType() == null) || this.tagType.equals(r2.getTagType()))
 			&& ((this.fwVersion == null && r2.getFwVersion() == null) || this.fwVersion.equals(r2.getFwVersion()))
 			&& (this.jobNumber == r2.getJobNumber())
+			&& (this.compType == r2.getCompType())
+			&& (this.compSize == r2.getCompSize())
+			&& (this.decompSize == r2.getDecompSize())
 			&& (this.tagClass == r2.getTagClass())
-			&& (this.mode == r2.getMode())
+			&& (this.otaMode == r2.getOtaMode())
 			&& ((this.fileName == null && r2.getFileName() == null) || this.fileName.equals(r2.getFileName()))
 		) return true;
 			

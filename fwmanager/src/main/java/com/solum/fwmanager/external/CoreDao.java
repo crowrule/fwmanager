@@ -66,6 +66,35 @@ public class CoreDao {
 	}
 	
 	// TODO : Support MS_SQL
+	public List<TagTypeInfoDTO> getInstalledAllTagTypeList(){
+		EntityManager entityManager = emFactory.createEntityManager();
+		String sql = "SELECT B.slabel_type, A.display_width AS width, A.is_nfc, B.is_ti, "
+				+ "SUBSTRING(A.code FROM 9 FOR 3) AS attribute FROM enddevice A "
+				+ "INNER JOIN (SELECT DISTINCT ON (slabel_type) id, slabel_type, is_ti FROM solum_enddevice) B "
+				+ "ON A.id=B.id";
+		
+		Query nativeQuery = entityManager.createNativeQuery(sql);
+		
+		@SuppressWarnings("unchecked")
+		List<Object[]> resultList = nativeQuery.getResultList();
+	    List<TagTypeInfoDTO> tagTypeList = resultList.stream().map(tagTypeInfo -> {
+	    	TagTypeInfoDTO singleDTO = new TagTypeInfoDTO();
+	    	
+	    	singleDTO.setSlabelType((String)tagTypeInfo[0]);
+	    	singleDTO.setWidth((Integer)tagTypeInfo[1]);
+	    	singleDTO.setNfc((Boolean)tagTypeInfo[2]);
+	    	singleDTO.setTi((Boolean)tagTypeInfo[3]);
+	    	singleDTO.setAttribute((String)tagTypeInfo[4]);
+	    	
+	    	singleDTO.setPropertiesFromLowData();
+    		
+            return singleDTO;
+	    }).collect(Collectors.toList());
+	    
+	    return tagTypeList;
+	}
+	
+	// TODO : Support MS_SQL
 	public List<TargetStationDTO> getTargetStationList(String tagAttribute){
 		EntityManager entityManager = emFactory.createEntityManager();
 		String sql = "SELECT ST.id, ST.code, ST.name, ST.description, COUNT(SUB.gw_id) AS gwCount, SUM(SUB.tag_count) AS tagCount " + 

@@ -5,37 +5,116 @@
 <title>Insert title here</title>
 </head>
 <script>
+
 function waitAndNextStep(){
-	alert('Uploading New Firmware...');
+	alert('Register new firmware for OTA. To do that it should be call API.');
 	
 	location.href='./targetList';
 }
 
+<!--
+$('#singleUploadForm').submit(function(){
+	$.ajax({
+		url: $('#singleUploadForm').attr('action'),
+		type: "POST",
+		data: $('#singleUploadForm').serialize(),
+		succeess: function(){
+			alert('abc');
+		}
+	});
+});
+-->
+$("#singleUploadForm").submit(function(event) {
+
+    //var formData = new FormData();
+    //formData.append("uploadFiles", $('[name="file"]')[0].files[0]);
+    event.stopPropagation();
+    event.preventDefault();
+    $.ajax({
+      url: $(this).attr("action"),
+      data: formData,
+      processData: false,
+      contentType: false,
+      type: 'POST',
+      success: function(data) {
+        alert('abc');
+      }
+    });
+    return false;
+  });
 </script>
 <body>
 	<h1>Register New FW</h1>
-     <div>
-     	<h6>Select Tag Type</h6>
-		<select name="type">
-		    <option value="2.9 Mono">2.9 Mono</option>
-		    <option value="2.9 Red">2.9 Red</option>
+		<!-- 
+		<div>
+			<h6>Select Tag Type</h6>
+			<select name="type">
+				<option value="2.9 Mono">2.9 Mono</option>
+				<option value="2.9 Red">2.9 Red</option>
+			</select>
+		</div>
+		-->	
+	<div>
+		<select id="selTagType">
+			<option value="0">select tag type</option>
+			<option th:each="tagType : ${tagTypes}" th:value="${tagType.slabelType}" th:text="${tagType.slabelType}"></option>
 		</select>
-     </div>	
-     <div>
+	</div>
+    <div>
      	<h6>Select New FW File</h6>
-		<form id="singleUploadForm" name="singleUploadForm" enctype="multipart/form-data" method="post" action="/file/upload" >
-		    <input id="singleFileUploadInput" type="file" name="file" />
+		<form id="singleUploadForm" name="singleUploadForm" enctype="multipart/form-data" method="post" action="/api/uploadfile" >
+		    <input id="singleFileUploadInput" type="file" name="filePath" />
 		    <button type="submit">Submit</button>
 		</form>
-		
      </div>
+<!--
      <div>
          <div id="singleFileUploadError"></div>
          <div id="singleFileUploadSuccess"></div>
      </div>
-     <p><br></p>
+-->
+	<p><br/></p>
+	<div>
+		<table>
+			<tbody>
+				<tr>
+					<th>Package URL</th>
+					<td><input id="txUrl" type="text"/></td>
+				</tr>
+				<tr>
+					<th>Tag Type</th>
+					<td><input id="txTagType" type="text" value="Retrieve jar file or input directly."/></td>
+				</tr>
+				<tr>
+					<th>Version</th>
+					<td><input id="txVersion" type="text"/></td>
+				</tr>
+				<tr>
+					<th>Tag Class</th>
+					<td>
+						<select id="selTagClass">
+							<option value="0">243 chip</option>
+							<option value="1">Marvell chip</option>
+							<option value="2">TI(2630)</option>
+							<option value="3">TI(1310)</option>							
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>OTA Mode</th>
+					<td>
+						<select id="selOTAMode">
+							<option value="0">For 243, Marvell</option>
+							<option value="1">App&Stack for TI</option>
+							<option value="2">Only App for TI</option>		
+						</select>					
+					</td>
+				</tr>
+			</tbody>
+		</table>    
+	</div>
      <div>
-      	<input id="targetListBtn" type="button" value="Upload" onClick="waitAndNextStep();">
+      	<input id="btnRegisterOTA" type="button" value="Register" onclick="waitAndNextStep();">
      </div>
 </body>
 </html>

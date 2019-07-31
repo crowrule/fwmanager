@@ -43,7 +43,7 @@ public class FileController {
 			@ApiResponse(code = 200, message = "Successfully reserved."),
 			@ApiResponse(code = 400, message = "Use wrong parameter.")
 			})
-    @PostMapping("/upload")
+    @PostMapping("/uploadfile")
     public ResponseEntity<FileUploadResponse> uploadFile(
     		@RequestParam("filePath") MultipartFile filePath) {
     	

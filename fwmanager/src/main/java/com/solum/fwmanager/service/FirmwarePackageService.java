@@ -3,12 +3,15 @@ package com.solum.fwmanager.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.solum.fwmanager.dto.CommonResponseDTO;
 import com.solum.fwmanager.dto.FirmwarePackageDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
 import com.solum.fwmanager.repository.FirmwarePackageRepository;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,40 +36,55 @@ public class FirmwarePackageService {
 		Optional<FirmwarePackage> ret = firmwarePackageRepository.findById(id);
 		
 		if (!ret.isPresent()) return null;
-		
-		FirmwarePackageDTO response = new FirmwarePackageDTO(ret.get().getType(),
-				ret.get().getAttribute(),
-				ret.get().getSiteCode(), 
+
+		FirmwarePackageDTO response = new FirmwarePackageDTO(ret.get().getTagType(),
 				ret.get().getJobNumber(), 
-				ret.get().getFwVersion(), 
+				ret.get().getFwVersion(),
+				ret.get().getCompType(),
+				ret.get().getCompSize(),
+				ret.get().getDecompSize(),
 				ret.get().getTagClass(), 
-				ret.get().getMode(), 
+				ret.get().getOtaMode(), 
 				ret.get().getFileName());
 		
 		return response;
 		
 	}
 	
-	public	int registerFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
+	public	CommonResponseDTO registerFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
 		
 		FirmwarePackage fwEntity = firmwarePackage.toEntity();
-		int	ret = 0;
 		
 		Optional<FirmwarePackage> oldFW = firmwarePackageRepository.findByTypeAndFwVersion(
-											firmwarePackage.getType(), 
+											firmwarePackage.getTagType(), 
 											firmwarePackage.getFwVersion());
+		
+		int	registerType = 1;
 		
 		// TODO : Refine the scenario for the existed record upload
 		if (oldFW.isPresent()) {
-			ret = 1;
 			fwEntity.setId(oldFW.get().getId());
-		}else ret = 2;
+			registerType = 2;
+		}
 		
 		Long id = firmwarePackageRepository.saveAndFlush(fwEntity).getId();
-		
 		log.debug("Save or Update FirmwaerPackage ID : {}", id);
+
+		CommonResponseDTO res = new CommonResponseDTO();
 		
-		return ret;
+		res.setResponseCode(id);
+		switch(registerType) {
+		case 1 : res.setResponseMessage(new StringBuilder("Successfully Update Existed Package for ")
+											.append(firmwarePackage.getTagType())
+											.append(", version : ").append(firmwarePackage.getFwVersion())
+											.toString());
+		case 2 : res.setResponseMessage(new StringBuilder("Successfully Register Firmware Package for ")
+											.append(firmwarePackage.getTagType())
+											.append(", version : ").append(firmwarePackage.getFwVersion())
+											.toString());
+		}
+		
+		return res;
 		
 	}
 	

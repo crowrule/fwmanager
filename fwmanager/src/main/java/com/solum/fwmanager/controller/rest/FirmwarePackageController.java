@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.solum.fwmanager.dto.CommonResponseDTO;
 import com.solum.fwmanager.dto.FirmwarePackageDTO;
 import com.solum.fwmanager.service.FirmwarePackageService;
 
@@ -28,27 +29,24 @@ public class FirmwarePackageController {
 			@ApiResponse(code = 200, message = "Successfully reserved."),
 			@ApiResponse(code = 400, message = "Use wrong parameter.")
 			})
-	@PostMapping("/register")
-	public ResponseEntity<String> registerReservation(@RequestBody FirmwarePackageDTO reqParam){
+	@PostMapping("/registerota")
+	public ResponseEntity<CommonResponseDTO> registerReservation(@RequestBody FirmwarePackageDTO reqParam){
 		log.info("register firmware");
 		
+		CommonResponseDTO	res = new CommonResponseDTO();
+		
 		// TODO : Create Super-Class which generate common 405 Error Message.
-		if (!firmwarePackageService.validateFirmwarePackage(reqParam)) return ResponseEntity.badRequest().body("Invalid Parameter"); 
-		
-		int	result  = firmwarePackageService.registerFirmwarePackage(reqParam);
-		 
-		
-		switch(result) {
-		case 1 : return ResponseEntity.ok(new StringBuilder("Successfully Update Existed Package for ")
-											.append(reqParam.getType())
-											.append(", version : ").append(reqParam.getFwVersion())
-											.toString());
-		case 2 : return ResponseEntity.ok(new StringBuilder("Successfully Register Firmware Package for ")
-											.append(reqParam.getType())
-											.append(", version : ").append(reqParam.getFwVersion())
-											.toString());
-		default : return ResponseEntity.badRequest().body("Invalid Parameter"); 
+		if (!firmwarePackageService.validateFirmwarePackage(reqParam)) {
+			
+			res.setResponseCode(-1);
+			res.setResponseMessage("Invalid Parameter");
+			
+			return ResponseEntity.badRequest().body(res); 
 		}
+		
+		res  = firmwarePackageService.registerFirmwarePackage(reqParam);
+		 
+		return ResponseEntity.ok(res);
 
 	}
 
