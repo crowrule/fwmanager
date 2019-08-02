@@ -16,9 +16,9 @@ spring:
     #database: POSTGRESQL
     database-platform: org.hibernate.dialect.PostgreSQL95Dialect
     show-sql: true
-    generate-ddl: false
+    generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
       use-new-id-generator-mappings: true
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
@@ -40,4 +40,11 @@ aimscore:
     username: browndwarf
     password: browndwarf
     type: com.zaxxer.hikari.HikariDataSource
+    
+ota:
+  execute:
+    duration:
+      starthour: 01
+      stophour: 05
+    intervalminutes: 20  
     

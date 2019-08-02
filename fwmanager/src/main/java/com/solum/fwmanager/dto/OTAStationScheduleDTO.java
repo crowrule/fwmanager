@@ -2,9 +2,6 @@ package com.solum.fwmanager.dto;
 
 import java.time.LocalDateTime;
 
-import com.solum.fwmanager.entity.FirmwarePackage;
-import com.solum.fwmanager.entity.FirmwarePackage.FirmwarePackageBuilder;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;

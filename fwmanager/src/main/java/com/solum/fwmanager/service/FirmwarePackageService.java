@@ -3,21 +3,25 @@ package com.solum.fwmanager.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.solum.fwmanager.dto.CommonResponseDTO;
 import com.solum.fwmanager.dto.FirmwarePackageDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
+import com.solum.fwmanager.event.FirmwarePackageEvent;
 import com.solum.fwmanager.repository.FirmwarePackageRepository;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class FirmwarePackageService {
 
+	@Autowired
+	private ApplicationEventPublisher applicationEventPublisher;	
+	
 	@Autowired
 	FirmwarePackageRepository	firmwarePackageRepository;
 	
@@ -51,11 +55,12 @@ public class FirmwarePackageService {
 		
 	}
 	
+	@Transactional
 	public	CommonResponseDTO registerFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
 		
 		FirmwarePackage fwEntity = firmwarePackage.toEntity();
 		
-		Optional<FirmwarePackage> oldFW = firmwarePackageRepository.findByTypeAndFwVersion(
+		Optional<FirmwarePackage> oldFW = firmwarePackageRepository.findByTagTypeAndFwVersion(
 											firmwarePackage.getTagType(), 
 											firmwarePackage.getFwVersion());
 		
@@ -70,8 +75,18 @@ public class FirmwarePackageService {
 		Long id = firmwarePackageRepository.saveAndFlush(fwEntity).getId();
 		log.debug("Save or Update FirmwaerPackage ID : {}", id);
 
-		CommonResponseDTO res = new CommonResponseDTO();
+		//
+		//	Publish Event
+		//
+		// TODO : Retrieve Application Tag Type Info from GW Tag Type Info
+		//String targetTagType =  
+		FirmwarePackageEvent firmwarePackageEvent = new FirmwarePackageEvent(this, "B27");
+		applicationEventPublisher.publishEvent(firmwarePackageEvent);		
 		
+		//
+		//	Process Response
+		//
+		CommonResponseDTO res = new CommonResponseDTO();
 		res.setResponseCode(id);
 		switch(registerType) {
 		case 1 : res.setResponseMessage(new StringBuilder("Successfully Update Existed Package for ")

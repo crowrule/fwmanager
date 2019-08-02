@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.solum.fwmanager.dto.OTAStationScheduleDTO;
 import com.solum.fwmanager.entity.OTASchedule;
@@ -63,6 +64,7 @@ public class ScheduleArrangeService {
 	}
 	*/
 	
+	@Transactional
 	public OTAStationScheduleDTO setAutoArrangeOTASchedule(String stationCode) {
 		
 		List<OTATargetGateway>	targetGWList = coreDao.getTargetGWList(stationCode);

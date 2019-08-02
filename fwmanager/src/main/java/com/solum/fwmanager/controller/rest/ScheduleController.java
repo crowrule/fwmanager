@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.solum.fwmanager.dto.OTAStationScheduleDTO;
-import com.solum.fwmanager.entity.FirmwarePackage;
 import com.solum.fwmanager.service.FirmwarePackageService;
+import com.solum.fwmanager.service.OTAScheduleService;
 import com.solum.fwmanager.service.ScheduleArrangeService;
-import com.solum.fwmanager.service.ScheduleService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -37,7 +36,7 @@ public class ScheduleController {
 	ScheduleArrangeService	scheduleArrangeService;
 	
 	@Autowired
-	ScheduleService	scheduleService;
+	OTAScheduleService	otaScheduleService;
 	
 	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
 	@ApiResponses(value = {
@@ -70,7 +69,7 @@ public class ScheduleController {
 	public ResponseEntity<String> getOTAScheduleFromGWbyMac(@PathVariable String mac){
 		
 		// TODO ; The following 
-		LocalDateTime	ret =  scheduleService.getOTAScheduleByMac(mac);
+		LocalDateTime	ret =  otaScheduleService.getOTAScheduleByMac(mac);
 		
 		
 		return ResponseEntity.ok(ret.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));

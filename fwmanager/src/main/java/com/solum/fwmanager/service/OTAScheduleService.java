@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class ScheduleService {
+public class OTAScheduleService {
 	
 	@Autowired
 	OTAScheduleRepository	otaScheduleRepository;
