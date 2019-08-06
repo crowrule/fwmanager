@@ -58,19 +58,24 @@ $(function () {
                   <th style="border:solid 1px;">NAME</th>
                   <th style="border:solid 1px;">IP</th>
                   <th style="border:solid 1px;">MAC</th>
-                  <th style="border:solid 1px;">Status</th>
+                  <th style="border:solid 1px;">Reserve Status</th>
                   <th style="border:solid 1px;">Reserve Time</th>
                 </tr>
                 </thead>
                 <tbody>
-              		<tr th:each="schedule : ${schedulelist}">
+              		<tr th:each="gwInfoVO : ${list}">
               		  <td  style="border:solid 1px;"><input type="checkbox" name="cancelTarget"/></td>	
-	                  <td  style="border:solid 1px;" th:text="${schedule.stationCode}">STATION</td>
-	                  <td style="border:solid 1px;">not implemented</td>
-	                  <td style="border:solid 1px;" th:text="${schedule.gwIp}">IP</td>
-	                  <td style="border:solid 1px;" th:text="${schedule.gwMac}">MAC</td>
-	                  <td style="border:solid 1px;">not implement</td>
-					 <td style="border:solid 1px;" th:text="${schedule.otaTime}">Reserve Time</td>
+	                  <td  style="border:solid 1px;" th:text="${gwInfoVO.stationCode}">STATION</td>
+	                  <!-- <td><a th:href="@{/samplehome/board/read(bno=${boardVO.bno})}" th:text="${boardVO.title}">TITLE</a></td> -->
+	                  <td style="border:solid 1px;" th:text="${gwInfoVO.name}">NAME</td>
+	                  <td style="border:solid 1px;" th:text="${gwInfoVO.ip}">IP</td>
+	                  <td style="border:solid 1px;" th:text="${gwInfoVO.mac}">MAC</td>
+	                  <td style="border:solid 1px; text-align:center;" th:switch="${gwInfoVO.status}" >
+							<span th:case="Reserved" th:text="${gwInfoVO.status}">Reserve Status</span>
+							<span th:case="Auto"><input type="button" style="width: 100%;" value="Auto Reservation" onClick="location.href='./auto'"></span>
+							<span th:case="Configure"><input type="button" style="width: 100%;" value="Manual Reservation" onClick="location.href='./manual'"/></span>
+					 </td>
+					 <td style="border:solid 1px;" th:text="${gwInfoVO.reserveTime}">Reserve Time</td>
 	                </tr>
                 </tbody>
               </table>

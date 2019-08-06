@@ -2,9 +2,11 @@ package com.solum.fwmanager.service;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.solum.fwmanager.entity.OTASchedule;
@@ -36,5 +38,11 @@ public class OTAScheduleService {
 		}
 		
 		return LocalDateTime.of(1970, Month.JANUARY, 1, 0, 0);
+	}
+	
+	public List<OTASchedule> getAllOTASchedule() {
+		List<OTASchedule> scheduleList = otaScheduleRepository.findAll(Sort.by("otaTime"));
+		
+		return scheduleList;
 	}
 }

@@ -1,5 +1,7 @@
 package com.solum.fwmanager.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,8 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.solum.fwmanager.dto.TagTypeInfoDTO;
+import com.solum.fwmanager.entity.OTASchedule;
 import com.solum.fwmanager.service.CoreService;
 import com.solum.fwmanager.service.FakeService;
+import com.solum.fwmanager.service.OTAScheduleService;
 
 @Controller
 @RequestMapping(value="/")
@@ -17,7 +22,20 @@ public class TargetController {
 	@Autowired
 	FakeService	gwService;
 	
+	@Autowired
+	OTAScheduleService	otaScheduleService;
+
 	@RequestMapping(value = "targetList", method = RequestMethod.GET)
+	public String targetList(Model model) throws Exception {
+			
+		List<OTASchedule> schedulelist =  otaScheduleService.getAllOTASchedule();
+		
+		model.addAttribute("schedulelist", schedulelist);
+			
+		return "targetList";
+	}
+	
+	@RequestMapping(value = "targetList_defprecated", method = RequestMethod.GET)
 	public String targetList(Model model,
 			@RequestParam(required=false, defaultValue="1") int type) throws Exception {
 			
@@ -26,7 +44,7 @@ public class TargetController {
 		else if (type == 4 ) model.addAttribute("list", gwService.getTargetGWList4());
 		else model.addAttribute("list", gwService.getTargetGWList());
 			
-		return "targetList";
+		return "targetList_deprecated";
 	}
 	
 	@RequestMapping(value = "auto", method = RequestMethod.GET)
