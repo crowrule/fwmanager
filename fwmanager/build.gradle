@@ -16,6 +16,10 @@ configurations {
 }
 
 repositories {
+	maven {
+		url 'http://16.8.32.64:8081/nexus/content/groups/public/'
+	}
+
 	mavenCentral()
 }
 
@@ -28,6 +32,12 @@ dependencies {
 	
 	implementation 'io.springfox:springfox-swagger2:2.9.2'	
 	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+
+	implementation ('com.solum.aims.core:aims-core-solum:2.3.0-SNAPSHOT') {
+		transitive = false
+	} 
+	
+	implementation 'commons-io:commons-io:2.6'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
