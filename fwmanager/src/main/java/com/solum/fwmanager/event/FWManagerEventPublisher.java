@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import com.solum.fwmanager.entity.FirmwarePackage;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -13,7 +15,7 @@ public class FWManagerEventPublisher {
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
  
-	public void publishFirmwarePackageEvent(final String message) {
+	public void publishFirmwarePackageEvent(final FirmwarePackage message) {
 		log.info("Publishing custom event. ");
 
 		FirmwarePackageEvent customSpringEvent = new FirmwarePackageEvent(this, message);

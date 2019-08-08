@@ -30,9 +30,9 @@ public class FWManagerEventEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, classes=FirmwarePackageEvent.class)
     public void handleFirmwarePackageEvent(FirmwarePackageEvent event) {
     	
-		log.info("Start to arrange OTA Schedule for TagType : {}", event.getTargetTagType());
+		log.info("Start to arrange OTA Schedule for TagType : {}", event.getFirmwarePackageInfo().getTagType());
 		
-		List<TargetStationDTO> targetStationList =  coreService.getTargetStationList(event.getTargetTagType());
+		List<TargetStationDTO> targetStationList =  coreService.getTargetStationList(event.getFirmwarePackageInfo().getTagType());
 		
 		targetStationList.stream().forEach(stationDTO->{
 			String 	stationCode = stationDTO.getCode();
@@ -48,7 +48,7 @@ public class FWManagerEventEventListener {
 					, ret.getLastOTATime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		});
     	
-		log.info("Complete to arrange OTA Schedule for TagType : {}", event.getTargetTagType());
+		log.info("Complete to arrange OTA Schedule for TagType : {}", event.getFirmwarePackageInfo().getTagType());
     	
     }
 
