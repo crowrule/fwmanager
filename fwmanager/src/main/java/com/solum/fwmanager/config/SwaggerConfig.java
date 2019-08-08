@@ -29,7 +29,7 @@ public class SwaggerConfig {
     			.enable(swaggerEnable)
         		.groupName("default")
         		.select()
-        		.apis(RequestHandlerSelectors.basePackage("com.solum.fwmanager.controller"))
+        		.apis(RequestHandlerSelectors.basePackage("com.solum.fwmanager.controller.rest"))
         		.paths(defaultPaths())
         		.build()
         		.apiInfo(getApiInfo())
