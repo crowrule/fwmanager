@@ -1,5 +1,6 @@
 package com.solum.fwmanager.controller.rest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.solum.fwmanager.controller.param.FileUploadResponse;
+import com.solum.fwmanager.dto.FirmwarePackageDTO;
 import com.solum.fwmanager.service.FileStorageService;
 
 import io.swagger.annotations.ApiOperation;
@@ -44,26 +46,25 @@ public class FileController {
 			@ApiResponse(code = 400, message = "Use wrong parameter.")
 			})
     @PostMapping("/uploadfile")
-    public ResponseEntity<FileUploadResponse> uploadFile(
+    public ResponseEntity<FirmwarePackageDTO> uploadFile(
     		@RequestParam("filePath") MultipartFile filePath) {
     	
-    	boolean uploadResult = fileStorageService.storeFile(filePath);
+    	// TODO : Move file upload process to FirmwarePackageController
+		FirmwarePackageDTO uploadResult = fileStorageService.storeFile(filePath);
     	
-    	if (!uploadResult) {
+    	if (uploadResult == null) {
     		return ResponseEntity
     				.status(HttpStatus.METHOD_NOT_ALLOWED)
-    				.body(FileUploadResponse
-    						.builder()
-    						.resultMessage("Fail to upload file")
-    						.build()
-    				);
+    				.build();
     	}
 
     	// TODO : Make valid URL of uploaded File for each Tag Type
+    	/*
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/")
                 .path(filePath.getOriginalFilename())
                 .toUriString();
+
  
         return ResponseEntity
         		.ok(FileUploadResponse
@@ -75,7 +76,9 @@ public class FileController {
         				.resultMessage("Upload a file successfully.")
         				.build()
         			);
-       				
+         */
+    	
+    	return ResponseEntity.ok(uploadResult);
     }
 
 	/*
