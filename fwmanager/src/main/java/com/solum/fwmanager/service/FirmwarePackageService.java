@@ -1,5 +1,6 @@
 package com.solum.fwmanager.service;
 
+import java.io.File;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.solum.aims.core.solum.entity.SolumEndDevice.ClassType;
+import com.solum.aims.core.solum.util.SLabelType;
 import com.solum.fwmanager.dto.CommonResponseDTO;
 import com.solum.fwmanager.dto.FirmwarePackageDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
@@ -34,7 +37,8 @@ public class FirmwarePackageService {
 		
 	}
 	
-	
+	// TODO : Check it will be removed or reactivated
+	/*
 	public	FirmwarePackageDTO	getFirmwarePackageDTObyId(Long id) {
 		
 		Optional<FirmwarePackage> ret = firmwarePackageRepository.findById(id);
@@ -54,11 +58,13 @@ public class FirmwarePackageService {
 		return response;
 		
 	}
+	*/
 	
+	@Deprecated
 	@Transactional
-	public	CommonResponseDTO registerFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
+	public	CommonResponseDTO registerFirmwarePackage(File uploadFile, FirmwarePackageDTO firmwarePackage) {
 		
-		FirmwarePackage fwEntity = firmwarePackage.toEntity();
+		FirmwarePackage fwEntity = getFirmwarePackageEntityFromDTO(firmwarePackage);
 		
 		Optional<FirmwarePackage> oldFW = firmwarePackageRepository.findByTagTypeAndFwVersion(
 											firmwarePackage.getTagType(), 
@@ -80,7 +86,7 @@ public class FirmwarePackageService {
 		//
 		// TODO : Retrieve Application Tag Type Info from GW Tag Type Info
 		//String targetTagType =  
-		FirmwarePackageEvent firmwarePackageEvent = new FirmwarePackageEvent(this, "B27");
+		FirmwarePackageEvent firmwarePackageEvent = new FirmwarePackageEvent(this, fwEntity);
 		applicationEventPublisher.publishEvent(firmwarePackageEvent);		
 		
 		//
@@ -111,4 +117,28 @@ public class FirmwarePackageService {
 		return true;
 	}
 	
+	
+	private FirmwarePackage getFirmwarePackageEntityFromDTO(FirmwarePackageDTO dto) {
+		
+		FirmwarePackage entity = new FirmwarePackage();
+		SLabelType	labelType = SLabelType.valueOf(dto.getTagType());
+		
+		entity.setFileName(dto.getFileName());
+		entity.setFwVersion(dto.getFwVersion());
+		entity.setJobNumber(dto.getJobNumber());
+		
+		entity.setTagType(labelType.getHexValue());
+		entity.setTagClass(labelType.getClassType().getValue());
+		
+		if (labelType.getClassType() == ClassType.MARVELL || 
+				labelType.getClassType() == ClassType.SEMCO) entity.setOtaMode(0);
+		else entity.setOtaMode(dto.getOtaMode());
+		
+		// TODO : compSize, decompSize, compType 
+		entity.setCompType(1);
+		entity.setCompSize(10000);
+		entity.setDecompSize(20000);
+		
+		return entity;
+	}
 }
