@@ -9,7 +9,7 @@
 function waitAndNextStep(){
 	alert('Register new firmware for OTA. To do that it should be call API.');
 	
-	location.href='./targetList';
+	location.href='./stationList';
 }
 
 <!--
@@ -54,12 +54,14 @@ $("#singleUploadForm").submit(function(event) {
 			</select>
 		</div>
 		-->	
+
 	<div>
 		<select id="selTagType">
 			<option value="0">select tag type</option>
-			<option th:each="tagType : ${tagTypes}" th:value="${tagType.slabelType}" th:text="${tagType.slabelType}"></option>
+			<option th:each="tagType : ${tagTypes}" th:value="${tagType}" th:text="${tagType}"></option>
 		</select>
 	</div>
+
     <div>
      	<h6>Select New FW File</h6>
 		<form id="singleUploadForm" name="singleUploadForm" enctype="multipart/form-data" method="post" action="/api/uploadfile" >
@@ -74,12 +76,14 @@ $("#singleUploadForm").submit(function(event) {
      </div>
 -->
 	<p><br/></p>
+<!-- 
 	<div>
 		<table>
 			<tbody>
+
 				<tr>
-					<th>Package URL</th>
-					<td><input id="txUrl" type="text"/></td>
+					<th>Job Number</th>
+					<td><input id="txJobNumber" type="text"/></td>
 				</tr>
 				<tr>
 					<th>Tag Type</th>
@@ -89,6 +93,7 @@ $("#singleUploadForm").submit(function(event) {
 					<th>Version</th>
 					<td><input id="txVersion" type="text"/></td>
 				</tr>
+
 				<tr>
 					<th>Tag Class</th>
 					<td>
@@ -113,8 +118,9 @@ $("#singleUploadForm").submit(function(event) {
 			</tbody>
 		</table>    
 	</div>
+ -->
      <div>
-      	<input id="btnRegisterOTA" type="button" value="Register" onclick="waitAndNextStep();">
+      	<input id="btnRegisterOTA" type="button" value="Next" onclick="waitAndNextStep();">
      </div>
 </body>
 </html>

@@ -8,8 +8,8 @@ import com.solum.fwmanager.entity.FirmwarePackage;
 
 public interface FirmwarePackageRepository extends JpaRepository<FirmwarePackage, Long> {
 
-	Optional<FirmwarePackage>	findByfwVersion(String fwfwVersion);
+	Optional<FirmwarePackage>	findByfwVersion(int fwfwVersion);
 	
-	Optional<FirmwarePackage>	findByTagTypeAndFwVersion(String type, String fwVersion);
+	Optional<FirmwarePackage>	findByTagTypeAndFwVersion(String type, int fwVersion);
 	
 }

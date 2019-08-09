@@ -2,7 +2,6 @@ package com.solum.fwmanager.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,19 +35,21 @@ public class FirmwarePackage implements Serializable {
 	
 	private	int	jobNumber;
 	
-	private	String	fwVersion;
+	private	int	fwVersion;
 	
-	private short	compType;
+	private int	compType;
 	
 	private int	compSize;
 	
 	private int decompSize;
 	
-	private short	tagClass;
+	private int	tagClass;
 	
-	private short	otaMode;
+	private int	otaMode;
 	
 	private	String	fileName;
+	
+	// TODO : Add Checksum property
 	
 	@Column(updatable=false)
 	@CreationTimestamp
@@ -58,7 +59,7 @@ public class FirmwarePackage implements Serializable {
 	private LocalDateTime	updatedTime;
 	
 	@Builder
-	public FirmwarePackage(String tagType, int jobNumber, String fwVersion, short compType, int compSize, int decompSize, short tagClass, short otaMode, String	fileName) {
+	public FirmwarePackage(String tagType, int jobNumber, int fwVersion, short compType, int compSize, int decompSize, short tagClass, short otaMode, String	fileName) {
 		this.tagType = tagType;
 		this.jobNumber = jobNumber;
 		this.fwVersion = fwVersion;

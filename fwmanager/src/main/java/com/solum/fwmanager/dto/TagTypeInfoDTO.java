@@ -12,17 +12,17 @@ import lombok.Setter;
 public class TagTypeInfoDTO {
 	
 
-	@ApiModelProperty
-	String	size;
+	//@ApiModelProperty(hidden=true)
+	//String	size;
 	
-	@ApiModelProperty
-	String	type; 
+	//@ApiModelProperty
+	//String	tagType; 
 	
-	@ApiModelProperty
-	String	chipset;
+	//@ApiModelProperty
+	//String	chipset;
 	
-	@ApiModelProperty
-	String	color;
+	//@ApiModelProperty
+	//String	color;
 
 	//@ApiModelProperty
 	//boolean	isNfc;
@@ -30,18 +30,19 @@ public class TagTypeInfoDTO {
 	@JsonIgnore
 	String	slabelType = "";
 	
-	@JsonIgnore
-	int width = 0;
+	//@JsonIgnore
+	//int width = 0;
 
-	@ApiModelProperty
-	boolean	isNfc;
+	//@ApiModelProperty
+	//boolean	isNfc;
 	
 	@JsonIgnore
 	boolean	isTi;
 	
-	@ApiModelProperty
-	String attribute;
+	//@ApiModelProperty
+	//String jobNumber;
 	
+	/*
 	@JsonIgnore
 	public void setPropertiesFromLowData() {
 		
@@ -78,5 +79,5 @@ public class TagTypeInfoDTO {
 		
 		}
 	}
-	
+	*/
 }

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Base64;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.solum.fwmanager.dto.FirmwarePackageDTO;
+import com.solum.fwmanager.entity.FirmwarePackage;
+import com.solum.fwmanager.repository.FirmwarePackageRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileStorageService {
 
+	@Autowired
+	FirmwarePackageRepository	firmwarePackageRepository;	
+	
     private final Path fileStorageLocation;
     
     // TODO : Extract storage URL to property & rebuild it by tag type info
@@ -44,7 +50,7 @@ public class FileStorageService {
 		}
 	}
 
-
+	// TODO : Review return type and related scenario
 	public FirmwarePackageDTO storeFile(MultipartFile file) {
 		
 		// Normalize file name
@@ -92,6 +98,11 @@ public class FileStorageService {
 			resDTO.setCompSize((int)copySize);
 			resDTO.setDecompSize((int)copySize);
 
+			// Store Firmware 
+			FirmwarePackage	fwpackage = resDTO.toEntity();
+			Long id = firmwarePackageRepository.saveAndFlush(fwpackage).getId();
+			
+			resDTO.setEntityId(id);
 			
 			return resDTO;
 			

@@ -36,6 +36,9 @@ dependencies {
 	implementation ('com.solum.aims.core:aims-core-solum:2.3.0-SNAPSHOT') {
 		transitive = false
 	} 
+	implementation ('com.solum.aims.core:aims-core-entity:2.3.0-SNAPSHOT') {
+		transitive = false
+	} 
 	
 	implementation 'commons-io:commons-io:2.6'
 

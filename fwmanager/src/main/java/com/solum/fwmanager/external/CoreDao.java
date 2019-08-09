@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import com.solum.fwmanager.dto.TagTypeInfoDTO;
 import com.solum.fwmanager.dto.TargetStationDTO;
 import com.solum.fwmanager.external.entity.OTATargetGateway;
 
@@ -36,18 +35,21 @@ public class CoreDao {
 	
 	// TODO : Support MS_SQL
 	// TODO : Add 'stationCode' parameter to query
-	public List<TagTypeInfoDTO> getInstalledTagTypeListByStation(String stationCode){
+	public List<String> getInstalledTagTypeListByStation(String stationCode){
 		EntityManager entityManager = emFactory.createEntityManager();
-		String sql = "SELECT B.slabel_type, A.display_width AS width, A.is_nfc, B.is_ti, "
-				+ "SUBSTRING(A.code FROM 9 FOR 3) AS attribute FROM enddevice A "
+		String sql = "SELECT B.slabel_type " //, A.display_width AS width, A.is_nfc, B.is_ti, "
+				//+ "SUBSTRING(A.code FROM 9 FOR 3) AS attribute "
+				+ "FROM enddevice A "
 				+ "INNER JOIN (SELECT DISTINCT ON (slabel_type) id, slabel_type, is_ti FROM solum_enddevice) B "
 				+ "ON A.id=B.id";
 		
 		
 		Query nativeQuery = entityManager.createNativeQuery(sql);
-		
+
+		/*
 		@SuppressWarnings("unchecked")
 		List<Object[]> resultList = nativeQuery.getResultList();
+
 	    List<TagTypeInfoDTO> tagTypeList = resultList.stream().map(tagTypeInfo -> {
 	    	TagTypeInfoDTO singleDTO = new TagTypeInfoDTO();
 	    	
@@ -61,22 +63,29 @@ public class CoreDao {
     		
             return singleDTO;
 	    }).collect(Collectors.toList());
+	    */
+	
+		@SuppressWarnings("unchecked")
+		List<String> tagTypeList = nativeQuery.getResultList();
 	    
 	    return tagTypeList;
 	}
 	
 	// TODO : Support MS_SQL
-	public List<TagTypeInfoDTO> getInstalledAllTagTypeList(){
+	public List<String> getInstalledAllTagTypeList(){
 		EntityManager entityManager = emFactory.createEntityManager();
-		String sql = "SELECT B.slabel_type, A.display_width AS width, A.is_nfc, B.is_ti, "
-				+ "SUBSTRING(A.code FROM 9 FOR 3) AS attribute FROM enddevice A "
+		String sql = "SELECT B.slabel_type " //, A.display_width AS width, A.is_nfc, B.is_ti, "
+				//+ "SUBSTRING(A.code FROM 9 FOR 3) AS attribute "
+				+ "FROM enddevice A "
 				+ "INNER JOIN (SELECT DISTINCT ON (slabel_type) id, slabel_type, is_ti FROM solum_enddevice) B "
 				+ "ON A.id=B.id";
 		
 		Query nativeQuery = entityManager.createNativeQuery(sql);
-		
+
+		/*
 		@SuppressWarnings("unchecked")
 		List<Object[]> resultList = nativeQuery.getResultList();
+
 	    List<TagTypeInfoDTO> tagTypeList = resultList.stream().map(tagTypeInfo -> {
 	    	TagTypeInfoDTO singleDTO = new TagTypeInfoDTO();
 	    	
@@ -90,12 +99,17 @@ public class CoreDao {
     		
             return singleDTO;
 	    }).collect(Collectors.toList());
+	    */
+		
+		@SuppressWarnings("unchecked")
+		List<String> tagTypeList = nativeQuery.getResultList();
 	    
 	    return tagTypeList;
 	}
 	
+	// TODO : Modify query
 	// TODO : Support MS_SQL
-	public List<TargetStationDTO> getTargetStationList(String tagAttribute){
+	public List<TargetStationDTO> getTargetStationList(List<String> tagAttributes){
 		EntityManager entityManager = emFactory.createEntityManager();
 		String sql = "SELECT ST.id, ST.code, ST.name, ST.description, COUNT(SUB.gw_id) AS gwCount, SUM(SUB.tag_count) AS tagCount " + 
 				"FROM station ST " + 
@@ -103,14 +117,14 @@ public class CoreDao {
 				"	SELECT AC.station_id, AC.id AS gw_id, COUNT(ED.*) AS tag_count FROM accesspoint AC " + 
 				"	INNER JOIN enddevice ED " + 
 				"	ON AC.id=ED.accesspoint_id " + 
-				"	WHERE SUBSTRING(ED.code FROM 9 FOR 3) = ? " + 
+				"	WHERE SUBSTRING(ED.code FROM 9 FOR 3) IN (:attributeList) " + 
 				"	GROUP BY AC.station_id, AC.id " + 
 				") SUB " + 
 				"ON ST.id=SUB.station_id " + 
 				"GROUP BY ST.id, ST.code, ST.name, ST.description"; 
 		
 		Query nativeQuery = entityManager.createNativeQuery(sql);
-		nativeQuery.setParameter(1, tagAttribute);
+		nativeQuery.setParameter("attributeList", tagAttributes);
 		
 		@SuppressWarnings("unchecked")
 		List<Object[]> resultList = nativeQuery.getResultList();

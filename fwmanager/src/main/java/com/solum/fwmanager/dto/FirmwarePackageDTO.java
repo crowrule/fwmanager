@@ -18,7 +18,6 @@ public class FirmwarePackageDTO {
 	// TODO : Check how to retrieve these information
 	//@ApiModelProperty(accessMode=AccessMode.READ_ONLY)
 	//private String	type;
-	
 	@ApiModelProperty
 	private String	tagType;
 	
@@ -47,13 +46,17 @@ public class FirmwarePackageDTO {
 	@ApiModelProperty
 	private short	otaMode;
 	
+	// TODO : Check whether checkSum is remain or not.
 	@ApiModelProperty
 	private String	checkSum;
 	
 	@ApiModelProperty
 	private	String	fileName;
 	
-	/*
+	@ApiModelProperty
+	private	Long	entityId;
+	
+	
 	@JsonIgnore
 	public FirmwarePackage toEntity() {
 		return FirmwarePackage.builder()
@@ -68,7 +71,7 @@ public class FirmwarePackageDTO {
 				.fileName(fileName)
 				.build();
 	}
-	*/
+	
 	
 	@JsonIgnore
 	public boolean equals(Object o) { 

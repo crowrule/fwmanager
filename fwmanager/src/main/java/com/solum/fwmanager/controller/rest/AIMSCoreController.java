@@ -5,11 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.solum.fwmanager.dto.TagTypeInfoDTO;
 import com.solum.fwmanager.dto.TargetStationDTO;
 import com.solum.fwmanager.service.CoreService;
 
@@ -32,22 +31,25 @@ public class AIMSCoreController {
 			@ApiResponse(code = 500, message = "Internal.")
 			})
 	@GetMapping(value = "tagtype", produces="application/json")
-	public ResponseEntity<List<TagTypeInfoDTO>> getTagInfoByStaion(String stationCode) throws Exception {
-		List<TagTypeInfoDTO> ret =  coreService.getTagTypeList(stationCode);
+	public ResponseEntity<List<String>> getTagInfoByStaion(String stationCode) throws Exception {
+		List<String> ret =  coreService.getTagTypeList(stationCode);
 		
 		return ResponseEntity.ok(ret);
 	}
 	
+	// TODO : Are this API useful? If not, it should be considered to be removed.
 	@ApiOperation(tags={"AIMS"}, value="Retrieve target station list")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully reserved."),
 			@ApiResponse(code = 500, message = "Internal.")
 			})
-	@GetMapping(value = "stationlist/{tagattribute:.+}", produces="application/json")
+	@GetMapping(value = "stationlist", produces="application/json")
 	public ResponseEntity<List<TargetStationDTO>> getTargetStationList(
-				@PathVariable("tagattribute") String tagattribute
+				@RequestParam(value="tagtype", required=true) String tagtype,
+				@RequestParam("tagtypename") String tagtypename
 			) throws Exception {
-		List<TargetStationDTO> ret =  coreService.getTargetStationList(tagattribute);
+
+		List<TargetStationDTO> ret =  coreService.getTargetStationList(tagtype, tagtypename);
 		
 		return ResponseEntity.ok(ret);
 	}
