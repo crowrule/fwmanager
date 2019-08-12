@@ -10,6 +10,6 @@ public interface FirmwarePackageRepository extends JpaRepository<FirmwarePackage
 
 	Optional<FirmwarePackage>	findByfwVersion(int fwfwVersion);
 	
-	Optional<FirmwarePackage>	findByTagTypeAndFwVersion(String type, int fwVersion);
+	Optional<FirmwarePackage>	findByTagTypeCodeAndFwVersion(String type, int fwVersion);
 	
 }

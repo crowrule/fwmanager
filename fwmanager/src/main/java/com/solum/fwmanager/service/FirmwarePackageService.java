@@ -66,7 +66,7 @@ public class FirmwarePackageService {
 		
 		FirmwarePackage fwEntity = getFirmwarePackageEntityFromDTO(firmwarePackage);
 		
-		Optional<FirmwarePackage> oldFW = firmwarePackageRepository.findByTagTypeAndFwVersion(
+		Optional<FirmwarePackage> oldFW = firmwarePackageRepository.findByTagTypeCodeAndFwVersion(
 											firmwarePackage.getTagType(), 
 											firmwarePackage.getFwVersion());
 		
@@ -109,7 +109,7 @@ public class FirmwarePackageService {
 		
 	}
 	
-	// TODO : Refine Validation Rule 
+	// TODO : Refine Validation Rule ; Move to FileStorageService
 	public boolean validateFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
 		
 		// TODO : is the FW file existed at the place pointed from FilePath.

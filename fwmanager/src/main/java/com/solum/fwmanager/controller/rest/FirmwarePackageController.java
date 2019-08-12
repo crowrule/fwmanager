@@ -49,26 +49,15 @@ public class FirmwarePackageController {
 		
 		CommonResponseDTO	res = new CommonResponseDTO();
 		
-		FirmwarePackageDTO uploadResult = fileStorageService.storeFile(filePath);
+		res = fileStorageService.storeFile(filePath);
     	
-    	if (uploadResult == null) {
+    	if (res == null) {
     		return ResponseEntity
     				.status(HttpStatus.METHOD_NOT_ALLOWED)
     				.body(new CommonResponseDTO(-2, "Fail to upload package")
     				);
     	}
 		
-		// TODO : Create Super-Class which generate common 405 Error Message.
-		if (!firmwarePackageService.validateFirmwarePackage(reqParam)) {
-			
-			res.setResponseCode(-1);
-			res.setResponseMessage("Invalid Parameter");
-			
-			return ResponseEntity.badRequest().body(res); 
-		}
-		
-		//res  = firmwarePackageService.registerFirmwarePackage(new File(), uploadResult);
-		 
 		return ResponseEntity.ok(res);
 
 	}

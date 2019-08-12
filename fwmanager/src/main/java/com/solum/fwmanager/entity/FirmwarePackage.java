@@ -31,7 +31,7 @@ public class FirmwarePackage implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long	id;	
 	
-	private String	tagType;
+	private String	tagTypeCode;
 	
 	private	int	jobNumber;
 	
@@ -49,6 +49,8 @@ public class FirmwarePackage implements Serializable {
 	
 	private	String	fileName;
 	
+	private String	tagType;
+	
 	// TODO : Add Checksum property
 	
 	@Column(updatable=false)
@@ -59,8 +61,8 @@ public class FirmwarePackage implements Serializable {
 	private LocalDateTime	updatedTime;
 	
 	@Builder
-	public FirmwarePackage(String tagType, int jobNumber, int fwVersion, short compType, int compSize, int decompSize, short tagClass, short otaMode, String	fileName) {
-		this.tagType = tagType;
+	public FirmwarePackage(String tagTypeCode, int jobNumber, int fwVersion, short compType, int compSize, int decompSize, short tagClass, short otaMode, String fileName,String tagType) {
+		this.tagTypeCode = tagTypeCode;
 		this.jobNumber = jobNumber;
 		this.fwVersion = fwVersion;
 		this.compType = compType;
@@ -69,5 +71,6 @@ public class FirmwarePackage implements Serializable {
 		this.tagClass = tagClass;
 		this.otaMode = otaMode;
 		this.fileName = fileName;
+		this.tagType = tagType;
 	}	
 }

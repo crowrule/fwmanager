@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.solum.fwmanager.controller.param.FileUploadResponse;
+import com.solum.fwmanager.dto.CommonResponseDTO;
 import com.solum.fwmanager.dto.FirmwarePackageDTO;
 import com.solum.fwmanager.service.FileStorageService;
 
@@ -46,11 +47,12 @@ public class FileController {
 			@ApiResponse(code = 400, message = "Use wrong parameter.")
 			})
     @PostMapping("/uploadfile")
-    public ResponseEntity<FirmwarePackageDTO> uploadFile(
+    public ResponseEntity<CommonResponseDTO> uploadFile(
+    		@RequestParam(value="tagtype") String tagtype,
     		@RequestParam("filePath") MultipartFile filePath) {
     	
     	// TODO : Move file upload process to FirmwarePackageController
-		FirmwarePackageDTO uploadResult = fileStorageService.storeFile(filePath);
+		CommonResponseDTO uploadResult = fileStorageService.storeFile(tagtype,filePath);
     	
     	if (uploadResult == null) {
     		return ResponseEntity
@@ -58,26 +60,6 @@ public class FileController {
     				.build();
     	}
 
-    	// TODO : Make valid URL of uploaded File for each Tag Type
-    	/*
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(filePath.getOriginalFilename())
-                .toUriString();
-
- 
-        return ResponseEntity
-        		.ok(FileUploadResponse
-        				.builder()
-        				.fileName(filePath.getOriginalFilename())
-        				.fileUri(fileDownloadUri)
-        				.fileType(filePath.getContentType())
-        				.size(filePath.getSize())
-        				.resultMessage("Upload a file successfully.")
-        				.build()
-        			);
-         */
-    	
     	return ResponseEntity.ok(uploadResult);
     }
 
