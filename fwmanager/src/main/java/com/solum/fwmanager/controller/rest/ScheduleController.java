@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.solum.fwmanager.dto.OTAScheduleDTO;
 import com.solum.fwmanager.dto.OTAStationScheduleDTO;
 import com.solum.fwmanager.service.CoreService;
-import com.solum.fwmanager.service.FirmwarePackageService;
 import com.solum.fwmanager.service.OTAScheduleService;
 import com.solum.fwmanager.service.ScheduleArrangeService;
 
@@ -30,9 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(value= "/api")
 public class ScheduleController {
-
-	@Autowired
-	FirmwarePackageService	firmwarePackageService;	
 	
 	@Autowired
 	ScheduleArrangeService	scheduleArrangeService;

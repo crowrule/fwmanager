@@ -1,9 +1,7 @@
 package com.solum.fwmanager.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,14 +13,11 @@ import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.solum.fwmanager.dto.CommonResponseDTO;
-import com.solum.fwmanager.dto.FirmwarePackageDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
 import com.solum.fwmanager.repository.FirmwarePackageRepository;
 
@@ -166,12 +161,14 @@ public class FileStorageService {
     */
 	
 	// TODO : Refine Validation Rule 
+	/*
 	public boolean validateFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
 		
 		// TODO : is the FW file existed at the place pointed from FilePath.
 		
 		return true;
 	}
+	*/
 	
 	private OtaFileHeader parseOTAPackageFileHeader(InputStream uploadedFileStream) {
 		

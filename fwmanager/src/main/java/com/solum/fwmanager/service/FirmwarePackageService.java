@@ -1,19 +1,12 @@
 package com.solum.fwmanager.service;
 
-import java.io.File;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.solum.aims.core.solum.entity.SolumEndDevice.ClassType;
-import com.solum.aims.core.solum.util.SLabelType;
-import com.solum.fwmanager.dto.CommonResponseDTO;
-import com.solum.fwmanager.dto.FirmwarePackageDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
-import com.solum.fwmanager.event.FirmwarePackageEvent;
 import com.solum.fwmanager.repository.FirmwarePackageRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,30 +29,7 @@ public class FirmwarePackageService {
 		else return ret.get();
 		
 	}
-	
-	// TODO : Check it will be removed or reactivated
-	/*
-	public	FirmwarePackageDTO	getFirmwarePackageDTObyId(Long id) {
-		
-		Optional<FirmwarePackage> ret = firmwarePackageRepository.findById(id);
-		
-		if (!ret.isPresent()) return null;
-
-		FirmwarePackageDTO response = new FirmwarePackageDTO(ret.get().getTagType(),
-				ret.get().getJobNumber(), 
-				ret.get().getFwVersion(),
-				ret.get().getCompType(),
-				ret.get().getCompSize(),
-				ret.get().getDecompSize(),
-				ret.get().getTagClass(), 
-				ret.get().getOtaMode(), 
-				ret.get().getFileName());
-		
-		return response;
-		
-	}
-	*/
-	
+/*	
 	@Deprecated
 	@Transactional
 	public	CommonResponseDTO registerFirmwarePackage(File uploadFile, FirmwarePackageDTO firmwarePackage) {
@@ -108,15 +78,7 @@ public class FirmwarePackageService {
 		return res;
 		
 	}
-	
-	// TODO : Refine Validation Rule ; Move to FileStorageService
-	public boolean validateFirmwarePackage(FirmwarePackageDTO firmwarePackage) {
-		
-		// TODO : is the FW file existed at the place pointed from FilePath.
-		
-		return true;
-	}
-	
+
 	
 	private FirmwarePackage getFirmwarePackageEntityFromDTO(FirmwarePackageDTO dto) {
 		
@@ -141,4 +103,5 @@ public class FirmwarePackageService {
 		
 		return entity;
 	}
+*/
 }
