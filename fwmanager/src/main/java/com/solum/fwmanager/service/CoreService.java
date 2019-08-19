@@ -18,12 +18,6 @@ public class CoreService {
 	@Autowired
 	CoreDao	coreDao;
 	
-	/*
-	public	List<TagTypeInfoDTO> getGwCount() {
-		return coreDao.getInstalledTagTypeListByStation("ABC");
-	}
-	*/
-	
 	public	List<String> getAllStationList() {
 		
 		return coreDao.getStationList();
