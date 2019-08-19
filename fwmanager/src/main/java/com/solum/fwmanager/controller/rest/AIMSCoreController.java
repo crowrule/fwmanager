@@ -25,20 +25,19 @@ public class AIMSCoreController {
 	@Autowired
 	CoreService	coreService;
 	
-	@ApiOperation(tags={"AIMS"}, value="Retrieve Tag Type Info")
+	@ApiOperation(tags={"AIMS"}, value="Retrieve List of Types of Registered Tags ")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully reserved."),
 			@ApiResponse(code = 500, message = "Internal.")
 			})
-	@GetMapping(value = "tagtype", produces="application/json")
-	public ResponseEntity<List<String>> getTagInfoByStaion(String stationCode) throws Exception {
-		List<String> ret =  coreService.getTagTypeList(stationCode);
+	@GetMapping(value = "tagtypelist", produces="application/json")
+	public ResponseEntity<List<String>> getTagTypeList() throws Exception {
+		List<String> ret =  coreService.getTagTypeList("");
 		
 		return ResponseEntity.ok(ret);
 	}
 	
-	// TODO : Are this API useful? If not, it should be considered to be removed.
-	@ApiOperation(tags={"AIMS"}, value="Retrieve target station list")
+	@ApiOperation(tags={"AIMS"}, value="Retrieve target station list by uploaded firmware package")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully reserved."),
 			@ApiResponse(code = 500, message = "Internal.")
