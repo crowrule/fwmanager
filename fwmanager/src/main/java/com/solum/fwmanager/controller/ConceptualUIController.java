@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.solum.fwmanager.dto.OTAScheduleDTO;
 import com.solum.fwmanager.dto.TargetStationDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
-import com.solum.fwmanager.entity.OTASchedule;
 import com.solum.fwmanager.service.CoreService;
 import com.solum.fwmanager.service.FirmwarePackageService;
 import com.solum.fwmanager.service.OTAScheduleService;
@@ -45,7 +45,7 @@ public class ConceptualUIController {
 	@RequestMapping(value = "targetList", method = RequestMethod.GET)
 	public String targetList(Model model) throws Exception {
 			
-		List<OTASchedule> schedulelist =  otaScheduleService.getAllOTASchedule();
+		List<OTAScheduleDTO> schedulelist =  otaScheduleService.getAllOTASchedule();
 		
 		model.addAttribute("schedulelist", schedulelist);
 			
