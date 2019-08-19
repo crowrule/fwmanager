@@ -169,4 +169,17 @@ public class CoreDao {
 	    
 	    return targetGWList;
 	}	
+	
+	// TODO : Support MS-SQL
+	public List<String>	getStationList(){
+		EntityManager entityManager = emFactory.createEntityManager();
+		String sql = "SELECT DISTINCT code FROM station";
+		
+		Query nativeQuery = entityManager.createNativeQuery(sql);
+		
+		@SuppressWarnings("unchecked")
+		List<String> stationList = nativeQuery.getResultList();
+	    
+	    return stationList;
+	}
 }

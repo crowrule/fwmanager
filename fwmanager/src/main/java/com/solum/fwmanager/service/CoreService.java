@@ -24,6 +24,12 @@ public class CoreService {
 	}
 	*/
 	
+	public	List<String> getAllStationList() {
+		
+		return coreDao.getStationList();
+
+	}
+	
 	public	List<String> getTagTypeList(String stationCode) {
 		
 		// List<String> tagList = new ArrayList<String>();
