@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.solum.fwmanager.dto.OTAScheduleDTO;
 import com.solum.fwmanager.dto.OTAStationScheduleDTO;
+import com.solum.fwmanager.service.CoreService;
 import com.solum.fwmanager.service.FirmwarePackageService;
 import com.solum.fwmanager.service.OTAScheduleService;
 import com.solum.fwmanager.service.ScheduleArrangeService;
@@ -38,18 +40,23 @@ public class ScheduleController {
 	@Autowired
 	OTAScheduleService	otaScheduleService;
 	
+	@Autowired
+	CoreService	coreService;
+	
 	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully reserved."),
 			@ApiResponse(code = 400, message = "Use wrong parameter.")
 			})
-	@PostMapping("/schedulearrangebyfw/{packageId}")
+	@PostMapping("/arrangeschedulebyfw/{packageId}")
 	public ResponseEntity<List<OTAStationScheduleDTO>> arrangeOTASchedule(
 			@PathVariable String packageId
 			, @RequestBody List<String> stationList){
-		
-		// TODO ; The following 
-		// FirmwarePackage relatedPackage = firmwarePackageService.getFirmwarePackagebyId(packageId);
+
+		if (stationList == null || stationList.isEmpty()) {
+			log.info("No Target Station. Switch to all stations for Firmware Update.");
+			stationList = coreService.getAllStationList();
+		}
 		
 		List<OTAStationScheduleDTO> res = stationList.stream().map(stationCode->{
 			return scheduleArrangeService.setAutoArrangeOTASchedule(stationCode);
@@ -62,10 +69,41 @@ public class ScheduleController {
 	
 	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
 	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully retrieved."),
+			@ApiResponse(code = 204, message = "No OTA Scheudle")
+			})
+	@GetMapping("/otaschedulelist/{stationCode}")
+	public ResponseEntity<List<OTAScheduleDTO>> retrieveOTAScheduleByStaiton(
+			@PathVariable String stationCode){
+
+		List<OTAScheduleDTO> res = otaScheduleService.getOTAScheduleInfo(stationCode);
+		
+		if (res.isEmpty()) return ResponseEntity.noContent().build();
+		else return ResponseEntity.ok(res);
+		
+	}
+	
+	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully retrieved."),
+			@ApiResponse(code = 204, message = "No OTA Scheudle")
+			})
+	@GetMapping("/otaschedulelistall")
+	public ResponseEntity<List<OTAScheduleDTO>> retrieveAllOTAScheduleByStaiton(){
+
+		List<OTAScheduleDTO> res = otaScheduleService.getAllOTASchedule();
+		
+		if (res.isEmpty()) return ResponseEntity.noContent().build();
+		else return ResponseEntity.ok(res);
+		
+	}
+	
+	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
+	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully reserved."),
 			@ApiResponse(code = 400, message = "Use wrong parameter.")
 			})
-	@GetMapping("/otaschedule/{mac}")
+	@GetMapping("/otaschedulebygw/{mac}")
 	public ResponseEntity<String> getOTAScheduleFromGWbyMac(@PathVariable String mac){
 		
 		// TODO ; The following 

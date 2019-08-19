@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.solum.fwmanager.dto.OTAScheduleDTO;
 import com.solum.fwmanager.entity.OTASchedule;
 import com.solum.fwmanager.repository.OTAScheduleRepository;
 
@@ -40,9 +42,32 @@ public class OTAScheduleService {
 		return LocalDateTime.of(1970, Month.JANUARY, 1, 0, 0);
 	}
 	
-	public List<OTASchedule> getAllOTASchedule() {
-		List<OTASchedule> scheduleList = otaScheduleRepository.findAll(Sort.by("otaTime"));
+	public List<OTAScheduleDTO> getAllOTASchedule() {
+		List<OTAScheduleDTO> scheduleList = otaScheduleRepository.findAll(Sort.by("stationCode").and(Sort.by("otaTime")))
+											.stream()
+											.map(entity->OTAScheduleDTO.builder()
+													.stationCode(entity.getStationCode())
+													.gwIp(entity.getGwIp())
+													.gwMac(entity.getGwMac())
+													.otaTime(entity.getOtaTime())
+													.build())
+											.collect(Collectors.toList());				
 		
 		return scheduleList;
+	}
+	
+	public List<OTAScheduleDTO> getOTAScheduleInfo(String stationCode) {
+		List<OTAScheduleDTO> res = otaScheduleRepository.findAllByStationCode(stationCode)
+								.stream()
+								.map(entity->OTAScheduleDTO.builder()
+										.stationCode(entity.getStationCode())
+										.gwIp(entity.getGwIp())
+										.gwMac(entity.getGwMac())
+										.otaTime(entity.getOtaTime())
+										.build())
+								.collect(Collectors.toList());
+		
+		return res;
+								
 	}
 }
