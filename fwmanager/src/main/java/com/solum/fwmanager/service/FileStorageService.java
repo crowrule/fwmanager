@@ -1,7 +1,13 @@
 package com.solum.fwmanager.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -82,7 +88,6 @@ public class FileStorageService {
 
 			// TODO : Refine the following parameter
 			fwpackage.setJobNumber(100);
-			fwpackage.setCompSize((short)0);
 			
 			// Write ota data without header
 			String otaData = Base64.getEncoder().encodeToString(
@@ -91,6 +96,7 @@ public class FileStorageService {
 								, (int)originalSize));
 			String	encodedfileName = new StringBuilder(prefix).append(fileName).toString();
 			Path targetLocation = this.fileStorageLocation.resolve(encodedfileName);
+			// TODO : Check whether UTF8 encoding should be removed or not.
 			long copySize = Files.copy(IOUtils.toInputStream(otaData, StandardCharsets.UTF_8)
 									, targetLocation
 									, StandardCopyOption.REPLACE_EXISTING);
@@ -142,6 +148,40 @@ public class FileStorageService {
 		}
 	}
 
+	public String getUploadedFileContent(String fileName) throws IOException {
+		
+		String fileFullName = new StringBuilder(uploadUrl).append('/').append(fileName).toString();
+		
+		try(FileInputStream fis= new FileInputStream(new File(fileFullName))) {
+			StringBuilder sb = new StringBuilder();
+			
+			try (Reader r = new InputStreamReader(fis, "UTF-8")) {
+			    char[] buf = new char[1024];
+			    int amt = r.read(buf);
+			    while(amt > 0) {
+			        sb.append(buf, 0, amt);
+			        amt = r.read(buf);
+			    }
+			    return sb.toString();
+			    
+			} catch (UnsupportedEncodingException e) {
+				log.error("UnsupportedEncodingException : {}", e.getMessage());
+				throw e;
+			} catch (IOException e1) {
+				log.error("IOException during reading file : {}", e1.getMessage());
+				throw e1;
+			}  
+		    
+		}catch(FileNotFoundException e) {
+			log.error("FileNotFoundException : {}", e.getMessage());
+			throw e;
+		} catch (IOException e2) {
+			log.error("IOException during initializing FileInputStream : {}", e2.getMessage());
+			throw e2;
+		}
+
+	}
+	
 	/*
     public Resource loadFileAsResource(String fileName) throws Exception {
 		try {
@@ -227,7 +267,7 @@ public class FileStorageService {
 			try {
 				fwEntity.setTagClass(Integer.valueOf(this.tagClass));
 				fwEntity.setOtaMode(Integer.valueOf(this.otaMode));
-				fwEntity.setTagType(this.tagType);
+				fwEntity.setTagTypeCode(this.tagType);
 				fwEntity.setFwVersion(Integer.valueOf(this.version));
 				//fwEntity.setJobNumber(Integer.valueOf(this.attribute));
 				

@@ -3,6 +3,7 @@ package com.solum.fwmanager.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.solum.fwmanager.dto.OTAStationScheduleDTO;
+import com.solum.fwmanager.entity.FirmwarePackage;
 import com.solum.fwmanager.entity.OTASchedule;
 import com.solum.fwmanager.external.CoreDao;
 import com.solum.fwmanager.external.entity.OTATargetGateway;
+import com.solum.fwmanager.repository.FirmwarePackageRepository;
 import com.solum.fwmanager.repository.OTAScheduleRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,9 @@ public class ScheduleArrangeService {
 	
 	@Autowired
 	OTAScheduleRepository	otaScheduleRepository;
+	
+	@Autowired
+	FirmwarePackageRepository	fwPackageRepositoty;
 	
 	/*
 	public List<LocalDateTime> setAutoArrangeOTASchedule(int gwCount) {
@@ -65,9 +71,23 @@ public class ScheduleArrangeService {
 	*/
 	
 	@Transactional
-	public OTAStationScheduleDTO setAutoArrangeOTASchedule(String stationCode) {
+	public OTAStationScheduleDTO setAutoArrangeOTASchedule(String packageId, String stationCode) {
 		
+		Optional<FirmwarePackage> opFWPackage = fwPackageRepositoty.findById(Long.parseLong(packageId));
+		
+		// Check Whether there is no FW package
+		if (!opFWPackage.isPresent()) {
+			log.warn("No Firmware Package is registered.");
+			return null;			
+		}
+
 		List<OTATargetGateway>	targetGWList = coreDao.getTargetGWList(stationCode);
+		
+		// Check Whether there is no GW.
+		if (targetGWList.isEmpty()) {
+			log.warn("No Gateway is founded under this station.");
+			return null;
+		}
 		
 		List<OTASchedule> scheduleList = new ArrayList<OTASchedule>();
 		LocalDateTime startDateTime = getStartTime().withMinute(0).withSecond(0);
@@ -80,7 +100,7 @@ public class ScheduleArrangeService {
 			schedule.setGwMac(targetGWList.get(i).getMacAddress());
 			schedule.setGwIp(targetGWList.get(i).getIpAddress());
 			schedule.setStationCode(stationCode);
-			schedule.setFirmwarePackageId(1L);			
+			schedule.setFirmwarePackage(opFWPackage.get());			
 			
 			LocalDateTime otaTime = startDateTime.plusMinutes((i-gwCountCorrection)*intervalminutes);
 			

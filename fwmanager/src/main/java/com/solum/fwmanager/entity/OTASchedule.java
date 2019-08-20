@@ -33,12 +33,9 @@ public class OTASchedule implements Serializable {
 	private String gwMac;
 	
 	// TODO : Release relation with FirmwarePackage
-	/*
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "firmwarePackage_id")
     private FirmwarePackage firmwarePackage;
-    */
-	private Long firmwarePackageId;
 	
 	private String	stationCode;
 	
