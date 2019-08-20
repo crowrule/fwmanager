@@ -3,7 +3,6 @@ package com.solum.fwmanager.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.solum.fwmanager.entity.FirmwarePackage;
@@ -15,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class FirmwarePackageService {
 
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;	
+//	@Autowired
+//	private ApplicationEventPublisher applicationEventPublisher;	
 	
 	@Autowired
 	FirmwarePackageRepository	firmwarePackageRepository;
