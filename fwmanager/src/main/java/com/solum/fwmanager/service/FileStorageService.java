@@ -87,7 +87,7 @@ public class FileStorageService {
 			FirmwarePackage	fwpackage = header.extractFirmwarePackageEntity();
 
 			// TODO : Refine the following parameter
-			fwpackage.setJobNumber(100);
+			//fwpackage.setJobNumber(100);
 			
 			// Write ota data without header
 			String otaData = Base64.getEncoder().encodeToString(
@@ -219,20 +219,20 @@ public class FileStorageService {
 			bytes = IOUtils.toByteArray(uploadedFileStream);
 
 			log.debug("----------Parse Uploaded File--------------------");
-			log.debug(">>> Firmware Class : {}", String.format("%x", bytes[0]));
-			log.debug(">>> OTA Mode : {}", String.format("%x", bytes[1]));
-			log.debug(">>> Tag Type : {}", String.format("%x", bytes[2]));
-			log.debug(">>> Version : {}", String.format("%x", bytes[3]));
-			log.debug(">>> Site Code : {}", String.format("%x%x", bytes[4], bytes[5]));
-			log.debug(">>> Attribute : {}", String.format("%x%x%x%x", bytes[6], bytes[7], bytes[8], bytes[9]));
+			log.debug(">>> Firmware Class : {}", String.format("%02x", bytes[0]));
+			log.debug(">>> OTA Mode : {}", String.format("%02x", bytes[1]));
+			log.debug(">>> Tag Type : {}", String.format("%02x", bytes[2]));
+			log.debug(">>> Version : {}", String.format("%02x", bytes[3]));
+			log.debug(">>> Site Code : {}", String.format("%02x %02x", bytes[4], bytes[5]));
+			log.debug(">>> Attribute : {}", String.format("%02x %02x %02x %02x", bytes[6], bytes[7], bytes[8], bytes[9]));
 			log.debug("-------------------------------------------------");
 
-			header.setTagClass(String.format("%x", bytes[0]));
-			header.setOtaMode(String.format("%x", bytes[1]));
-			header.setTagType(String.format("%x", bytes[2]));
-			header.setVersion(String.format("%x", bytes[3]));
-			header.setSiteCode(String.format("%x%x", bytes[4], bytes[5]));
-			header.setAttribute(String.format("%x%x%x%x", bytes[6], bytes[7], bytes[8], bytes[9]));
+			header.setTagClass(String.format("%02x", bytes[0]));
+			header.setOtaMode(String.format("%02x", bytes[1]));
+			header.setTagType(String.format("%02x", bytes[2]));
+			header.setVersion(String.format("%02x", bytes[3]));
+			header.setSiteCode(String.format("%02x%02x", bytes[4], bytes[5]));
+			header.setAttribute(String.format("%02x%02x%02x%02x", bytes[6], bytes[7], bytes[8], bytes[9]));
 			
 			return header;
 		} catch (IOException e) {
@@ -269,7 +269,7 @@ public class FileStorageService {
 				fwEntity.setOtaMode(Integer.valueOf(this.otaMode));
 				fwEntity.setTagTypeCode(this.tagType);
 				fwEntity.setFwVersion(Integer.valueOf(this.version));
-				//fwEntity.setJobNumber(Integer.valueOf(this.attribute));
+				fwEntity.setJobNumber(this.attribute.replaceAll("^0+", ""));
 				
 				return fwEntity;
 				

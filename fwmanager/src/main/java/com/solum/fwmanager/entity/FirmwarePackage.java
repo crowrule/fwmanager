@@ -33,7 +33,7 @@ public class FirmwarePackage implements Serializable {
 	
 	private String	tagTypeCode;
 	
-	private	int	jobNumber;
+	private	String	jobNumber;
 	
 	private	int	fwVersion;
 	
@@ -61,7 +61,7 @@ public class FirmwarePackage implements Serializable {
 	private LocalDateTime	updatedTime;
 	
 	@Builder
-	public FirmwarePackage(String tagTypeCode, int jobNumber, int fwVersion, short compType, int compSize, int decompSize, short tagClass, short otaMode, String fileName,String tagType) {
+	public FirmwarePackage(String tagTypeCode, String jobNumber, int fwVersion, short compType, int compSize, int decompSize, short tagClass, short otaMode, String fileName,String tagType) {
 		this.tagTypeCode = tagTypeCode;
 		this.jobNumber = jobNumber;
 		this.fwVersion = fwVersion;

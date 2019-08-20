@@ -9,7 +9,7 @@ import lombok.Setter;
 @Data
 public class OTAPackageDTO {
 
-	private	int	jobNumber;
+	private	String	jobNumber;
 
 	private	int	fwVer;
 	
