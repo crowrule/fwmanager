@@ -12,10 +12,11 @@
 		</encoder>
 	</appender>
 
+	<!-- TODO : Extract Log File Location to properties -->
 	<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>./logs/browndwarf_galaxy.log</file>
+		<file>./logs/fwmanager.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-	      <fileNamePattern>./logs/older/browndwarf_galaxy.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+	      <fileNamePattern>./logs/older/fwmanager.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 	      <maxHistory>14</maxHistory>
 	      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 	        <maxFileSize>10MB</maxFileSize>
@@ -29,7 +30,7 @@
 
 
  
-    <logger name="com.solum.requestdistributor.service" level="debug" additivity="false">
+    <logger name="com.solum.fwmanager.service" level="debug" additivity="false">
     	<appender-ref ref="STDOUT" />
     </logger>	
 
