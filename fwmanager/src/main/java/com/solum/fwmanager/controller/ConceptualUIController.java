@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.solum.fwmanager.dto.OTAScheduleDTO;
 import com.solum.fwmanager.dto.TargetStationDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
-import com.solum.fwmanager.service.CoreService;
+import com.solum.fwmanager.service.AimsService;
 import com.solum.fwmanager.service.FirmwarePackageService;
 import com.solum.fwmanager.service.OTAScheduleService;
 
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ConceptualUIController {
 
 	@Autowired
-	CoreService		coreService;
+	AimsService		aimsService;
 	
 	@Autowired
 	OTAScheduleService	otaScheduleService;
@@ -35,7 +35,7 @@ public class ConceptualUIController {
 	@RequestMapping(value = "register", method = RequestMethod.GET)
 	public String fwregister(Model model) throws Exception {
 
-		List<String> tagTypeList =  coreService.getTagTypeList("");
+		List<String> tagTypeList =  aimsService.getTagTypeList("");
 		
 		model.addAttribute("tagTypes", tagTypeList);
 		
@@ -60,7 +60,7 @@ public class ConceptualUIController {
 		fwpackageId = 1;
 		FirmwarePackage fwPackage = firmwarePackageService.getFirmwarePackagebyId((long)fwpackageId);
 		log.info("FW Package Info : Tag Type({}), Version({})", fwPackage.getTagType(), fwPackage.getFwVersion());
-		List<TargetStationDTO> stationList =  coreService.getTargetStationList("42", "GRAPHIC_2_9_RED_NFC_INT_RT");
+		List<TargetStationDTO> stationList =  aimsService.getTargetStationList("42", "GRAPHIC_2_9_RED_NFC_INT_RT");
 
 		model.addAttribute("stationlist", stationList);
 			

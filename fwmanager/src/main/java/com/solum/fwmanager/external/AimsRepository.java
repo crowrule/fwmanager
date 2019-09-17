@@ -17,21 +17,11 @@ import com.solum.fwmanager.dto.TargetStationDTO;
 import com.solum.fwmanager.external.entity.OTATargetGateway;
 
 @Repository
-public class CoreDao {
+public class AimsRepository {
 
 	@Autowired
 	@Qualifier("aimsCoreEntityManagerFactory")
 	private	EntityManagerFactory emFactory;
-	
-	public	long getTest() {
-		EntityManager entityManager = emFactory.createEntityManager();
-	    String sql = "SELECT COUNT(*) FROM accesspoint";
-	 
-	    Query nativeQuery = entityManager.createNativeQuery(sql);
-	    BigInteger ret = (BigInteger)nativeQuery.getSingleResult();
-	    
-	    return ret.longValue();
-	}
 	
 	// TODO : Support MS_SQL
 	// TODO : Add 'stationCode' parameter to query

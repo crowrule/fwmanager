@@ -11,7 +11,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.solum.fwmanager.dto.OTAStationScheduleDTO;
 import com.solum.fwmanager.dto.TargetStationDTO;
-import com.solum.fwmanager.service.CoreService;
+import com.solum.fwmanager.service.AimsService;
 import com.solum.fwmanager.service.ScheduleArrangeService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,22 +24,23 @@ public class FWManagerEventEventListener {
 	ScheduleArrangeService	scheduleArrangeService;
 	
 	@Autowired
-	CoreService	coreService;
+	AimsService	aimsService;
 	
+	@Deprecated
 	@Async	
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, classes=FirmwarePackageEvent.class)
     public void handleFirmwarePackageEvent(FirmwarePackageEvent event) {
     	
 		log.info("Start to arrange OTA Schedule for TagType : {}", event.getFirmwarePackageInfo().getTagType());
 		
-		List<TargetStationDTO> targetStationList =  coreService.getTargetStationList(event.getFirmwarePackageInfo().getTagType());
+		List<TargetStationDTO> targetStationList =  aimsService.getTargetStationList(event.getFirmwarePackageInfo().getTagType(), "");
 		
 		targetStationList.stream().forEach(stationDTO->{
 			String 	stationCode = stationDTO.getCode();
 			String	stationName = stationDTO.getName();
 			
 			
-			OTAStationScheduleDTO ret = scheduleArrangeService.setAutoArrangeOTASchedule(stationCode);
+			OTAStationScheduleDTO ret = scheduleArrangeService.setAutoArrangeOTASchedule("1", stationCode);
 			
 			log.info("Start to arrage for {}({})", stationName, stationCode);
 			log.info("-- Detail Information : GW Count({}) From {} To {}"

@@ -26,7 +26,7 @@ import com.zaxxer.hikari.HikariDataSource;
 				"com.solum.fwmanager.externel.repository"
 		}
 )
-public class CoreDBConfig {
+public class AIMSDBConfig {
 
 	@Bean(name="aimsCoreDataSource")
 	@ConfigurationProperties(prefix="aimscore.datasource")

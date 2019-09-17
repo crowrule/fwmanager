@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.solum.fwmanager.dto.OTAStationScheduleDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
 import com.solum.fwmanager.entity.OTASchedule;
-import com.solum.fwmanager.external.CoreDao;
+import com.solum.fwmanager.external.AimsRepository;
 import com.solum.fwmanager.external.entity.OTATargetGateway;
 import com.solum.fwmanager.repository.FirmwarePackageRepository;
 import com.solum.fwmanager.repository.OTAScheduleRepository;
@@ -34,7 +34,7 @@ public class ScheduleArrangeService {
 	private int	intervalminutes;	
 	
 	@Autowired
-	CoreDao	coreDao;
+	AimsRepository	aimsRepository;
 	
 	@Autowired
 	OTAScheduleRepository	otaScheduleRepository;
@@ -81,7 +81,7 @@ public class ScheduleArrangeService {
 			return null;			
 		}
 
-		List<OTATargetGateway>	targetGWList = coreDao.getTargetGWList(stationCode);
+		List<OTATargetGateway>	targetGWList = aimsRepository.getTargetGWList(stationCode);
 		
 		// Check Whether there is no GW.
 		if (targetGWList.isEmpty()) {

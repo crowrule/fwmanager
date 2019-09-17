@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 
 import com.solum.aims.core.solum.util.SLabelType;
 import com.solum.fwmanager.dto.TargetStationDTO;
-import com.solum.fwmanager.external.CoreDao;
+import com.solum.fwmanager.external.AimsRepository;
 
 @Service
-public class CoreService {
+public class AimsService {
 
 	@Autowired
-	CoreDao	coreDao;
+	AimsRepository	aimsRepository;
 	
 	public	List<String> getAllStationList() {
 		
-		return coreDao.getStationList();
+		return aimsRepository.getStationList();
 
 	}
 	
@@ -28,8 +28,8 @@ public class CoreService {
 		
 		// List<String> tagList = new ArrayList<String>();
 		
-		if (stationCode.isEmpty()) return coreDao.getInstalledAllTagTypeList();
-		else return coreDao.getInstalledTagTypeListByStation(stationCode);
+		if (stationCode.isEmpty()) return aimsRepository.getInstalledAllTagTypeList();
+		else return aimsRepository.getInstalledTagTypeListByStation(stationCode);
 		
 
 	}
@@ -46,6 +46,6 @@ public class CoreService {
 			.collect(Collectors.toList());
 		
 		if (labelList.isEmpty()) return new ArrayList<TargetStationDTO>();
-		else return coreDao.getTargetStationList(labelList);
+		else return aimsRepository.getTargetStationList(labelList);
 	}
 }

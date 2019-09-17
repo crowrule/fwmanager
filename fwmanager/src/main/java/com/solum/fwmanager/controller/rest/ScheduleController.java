@@ -1,7 +1,5 @@
 package com.solum.fwmanager.controller.rest;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.solum.fwmanager.dto.OTAPackageDTO;
 import com.solum.fwmanager.dto.OTAScheduleDTO;
 import com.solum.fwmanager.dto.OTAStationScheduleDTO;
-import com.solum.fwmanager.service.CoreService;
+import com.solum.fwmanager.service.AimsService;
 import com.solum.fwmanager.service.OTAScheduleService;
 import com.solum.fwmanager.service.ScheduleArrangeService;
 
@@ -39,7 +37,7 @@ public class ScheduleController {
 	OTAScheduleService	otaScheduleService;
 	
 	@Autowired
-	CoreService	coreService;
+	AimsService	aimsService;
 	
 	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
 	@ApiResponses(value = {
@@ -53,7 +51,7 @@ public class ScheduleController {
 
 		if (stationList == null || stationList.isEmpty()) {
 			log.info("No Target Station. Switch to all stations for Firmware Update.");
-			stationList = coreService.getAllStationList();
+			stationList = aimsService.getAllStationList();
 		}
 		
 		List<OTAStationScheduleDTO> res = stationList.stream().map(stationCode->{

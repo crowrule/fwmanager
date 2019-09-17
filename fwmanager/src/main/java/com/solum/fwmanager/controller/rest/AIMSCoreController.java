@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.solum.fwmanager.dto.TargetStationDTO;
-import com.solum.fwmanager.service.CoreService;
+import com.solum.fwmanager.service.AimsService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AIMSCoreController {
 	
 	@Autowired
-	CoreService	coreService;
+	AimsService	aimsService;
 	
 	@ApiOperation(tags={"AIMS"}, value="Retrieve List of Types of Registered Tags ")
 	@ApiResponses(value = {
@@ -32,7 +32,7 @@ public class AIMSCoreController {
 			})
 	@GetMapping(value = "tagtypelist", produces="application/json")
 	public ResponseEntity<List<String>> getTagTypeList() throws Exception {
-		List<String> ret =  coreService.getTagTypeList("");
+		List<String> ret =  aimsService.getTagTypeList("");
 		
 		return ResponseEntity.ok(ret);
 	}
@@ -48,7 +48,7 @@ public class AIMSCoreController {
 				@RequestParam("tagtypename") String tagtypename
 			) throws Exception {
 
-		List<TargetStationDTO> ret =  coreService.getTargetStationList(tagtype, tagtypename);
+		List<TargetStationDTO> ret =  aimsService.getTargetStationList(tagtype, tagtypename);
 		
 		return ResponseEntity.ok(ret);
 	}
