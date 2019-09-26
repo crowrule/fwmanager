@@ -42,6 +42,9 @@ public class OTASchedule implements Serializable {
 	
 	private LocalDateTime	otaTime;
 	
+	@Column(columnDefinition = "boolean default true")
+	private boolean	isEnabled;
+	
 	@Column(updatable=false)
 	@CreationTimestamp
 	private LocalDateTime	createdTime;
@@ -55,6 +58,7 @@ public class OTASchedule implements Serializable {
 				.append(", GW Mac : ").append(gwMac)
 				.append(", GW IP : ").append(gwIp)
 				.append(", OTA Time : ").append(otaTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+				.append(", is Enabled : ").append(isEnabled)
 				.toString();
 	}
 }

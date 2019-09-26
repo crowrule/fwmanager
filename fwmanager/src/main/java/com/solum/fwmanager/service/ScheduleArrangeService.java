@@ -100,7 +100,8 @@ public class ScheduleArrangeService {
 			schedule.setGwMac(targetGWList.get(i).getMacAddress());
 			schedule.setGwIp(targetGWList.get(i).getIpAddress());
 			schedule.setStationCode(stationCode);
-			schedule.setFirmwarePackage(opFWPackage.get());			
+			schedule.setFirmwarePackage(opFWPackage.get());		
+			schedule.setEnabled(true);
 			
 			LocalDateTime otaTime = startDateTime.plusMinutes((i-gwCountCorrection)*intervalminutes);
 			

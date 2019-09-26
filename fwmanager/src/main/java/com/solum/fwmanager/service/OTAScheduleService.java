@@ -39,6 +39,11 @@ public class OTAScheduleService {
 			return new OTAPackageDTO();
 		}
 		
+		// Check whether this OTA Schedule is enabled 
+		if (!opOTASchedule.get().isEnabled()) {
+			return new OTAPackageDTO();			
+		}
+		
 		// Check whether the current time is valid. 
 		LocalDateTime	currentTime = LocalDateTime.now();
 			
@@ -64,6 +69,7 @@ public class OTAScheduleService {
 	public List<OTAScheduleDTO> getAllOTASchedule() {
 		List<OTAScheduleDTO> scheduleList = otaScheduleRepository.findAll(Sort.by("stationCode").and(Sort.by("otaTime")))
 											.stream()
+											.filter(entity->entity.isEnabled())
 											.map(entity->OTAScheduleDTO.builder()
 													.stationCode(entity.getStationCode())
 													.gwIp(entity.getGwIp())
@@ -78,6 +84,7 @@ public class OTAScheduleService {
 	public List<OTAScheduleDTO> getOTAScheduleInfo(String stationCode) {
 		List<OTAScheduleDTO> res = otaScheduleRepository.findAllByStationCode(stationCode)
 								.stream()
+								.filter(entity->entity.isEnabled())
 								.map(entity->OTAScheduleDTO.builder()
 										.stationCode(entity.getStationCode())
 										.gwIp(entity.getGwIp())
@@ -90,17 +97,9 @@ public class OTAScheduleService {
 								
 	}
 	
-	public 	OTAScheduleDTO	getOTAScheduleByMac(String mac) {
-		OTAScheduleDTO res = otaScheduleRepository.findById(mac)
-				.map(entity->OTAScheduleDTO.builder()
-						.stationCode(entity.getStationCode())
-						.gwIp(entity.getGwIp())
-						.gwMac(entity.getGwMac())
-						.otaTime(entity.getOtaTime())
-						.build())
-				.orElse(null);
-				
-
+	// TODO : Check whether it is useful. 
+	public 	OTASchedule	getOTAScheduleByMac(String mac) {
+		OTASchedule res = otaScheduleRepository.findById(mac).orElse(null);
 		return res;	
 	}
 
@@ -112,18 +111,96 @@ public class OTAScheduleService {
 		}
 		
 		OTASchedule	updateOtaSchedule = opOtaSchedule.get();
+		if (!updateOtaSchedule.isEnabled()) {
+			return new CommonResponseDTO(404L, "Can't find OTA Schedule by mac");
+		}	
+
+		
 		updateOtaSchedule.setOtaTime(updateTime);
 		otaScheduleRepository.saveAndFlush(updateOtaSchedule);
 
 		String	msg = new StringBuilder("otaTime is updated to ")
 							.append(updateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-							.append(" for GW ; ")
+							.append(" for GW(")
 							.append(mac)
+							.append(")")
 							.toString();
 		
 		return new CommonResponseDTO(200L, msg);	
 	}
 	
+
+	public 	CommonResponseDTO	disableOTAScheduleByMac(String mac) {
+		Optional<OTASchedule> opOtaSchedule = otaScheduleRepository.findById(mac);
+
+		if (!opOtaSchedule.isPresent() ) {
+			return new CommonResponseDTO(404L, "Can't find OTA Schedule by mac");
+		}
+		
+		OTASchedule	disableOtaSchedule = opOtaSchedule.get();
+		if (!disableOtaSchedule.isEnabled()) {
+			return new CommonResponseDTO(404L, "Can't find OTA Schedule by mac");
+		}	
+		
+		disableOtaSchedule.setEnabled(false);
+		otaScheduleRepository.saveAndFlush(disableOtaSchedule);
+
+		String	msg = new StringBuilder("OTA ")
+							.append(" for GW(")
+							.append(mac)
+							.append(")")
+							.append(" is disabled.")
+							.toString();
+		
+		return new CommonResponseDTO(200L, msg);	
+	}
+	
+	public 	CommonResponseDTO	enableOTAScheduleByMac(String mac) {
+		Optional<OTASchedule> opOtaSchedule = otaScheduleRepository.findById(mac);
+
+		if (!opOtaSchedule.isPresent()) {
+			return new CommonResponseDTO(404L, "Can't find disabled OTA Schedule by mac");
+		}
+		
+		OTASchedule	targetOtaSchedule = opOtaSchedule.get();
+		if (targetOtaSchedule.isEnabled()) {
+			return new CommonResponseDTO(404L, "Can't find disabled OTA Schedule by mac");
+		}		
+		
+		targetOtaSchedule.setEnabled(true);
+		
+		LocalDateTime newOtaTime = LocalDateTime.now()
+									.plusDays(1)
+									.withHour(targetOtaSchedule.getOtaTime().getHour())
+									.withMinute(targetOtaSchedule.getOtaTime().getMinute());
+		targetOtaSchedule.setOtaTime(newOtaTime);
+		
+		otaScheduleRepository.saveAndFlush(targetOtaSchedule);
+
+		String	msg = new StringBuilder("OTA is enabled and scheduled at  ")
+				.append(newOtaTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+				.append(" for GW(")
+				.append(mac)
+				.append(")")
+				.toString();
+
+		return new CommonResponseDTO(200L, msg);		
+	}
+	
+	public List<OTAScheduleDTO> getAllDisabledOTASchedule() {
+		List<OTAScheduleDTO> scheduleList = otaScheduleRepository.findAll(Sort.by("stationCode").and(Sort.by("otaTime")))
+											.stream()
+											.filter(entity->!entity.isEnabled())
+											.map(entity->OTAScheduleDTO.builder()
+													.stationCode(entity.getStationCode())
+													.gwIp(entity.getGwIp())
+													.gwMac(entity.getGwMac())
+													.otaTime(entity.getOtaTime())
+													.build())
+											.collect(Collectors.toList());				
+		
+		return scheduleList;
+	}
 	
 	private OTAPackageDTO convertFromFirmwarePackageEntity(FirmwarePackage fwPackage) throws IOException {
 		OTAPackageDTO otaPackageDto = new OTAPackageDTO();

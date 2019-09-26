@@ -13,7 +13,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -126,12 +128,12 @@ public class ScheduleController {
 		return ResponseEntity.ok(ret);
 	}
 	
-	@ApiOperation(tags={"OTA Schedule"}, value="Modify OTA Schedule Time")
+	@ApiOperation(tags={"OTA Schedule Management"}, value="Modify OTA Schedule Time")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully updated."),
 			@ApiResponse(code = 404, message = "se wrong parameter.")
 			})
-	@PutMapping("/otashcedule/{mac}")
+	@PatchMapping("/otashceduletime/{mac}")
 	public ResponseEntity<CommonResponseDTO> updateOTASchedule(
 			@PathVariable String mac,
 			@RequestParam("newOtaTime")
@@ -156,6 +158,63 @@ public class ScheduleController {
 		}else {
 			return ResponseEntity.ok(res);
 		}
+		
+	}
+	
+	@ApiOperation(tags={"OTA Schedule Management"}, value="Disable OTA Schedule")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully updated."),
+			@ApiResponse(code = 404, message = "se wrong parameter.")
+			})
+	@DeleteMapping("/otashcedule/{mac}")
+	public ResponseEntity<CommonResponseDTO> disableOTASchedule(
+			@PathVariable String mac){
+		
+		CommonResponseDTO res;
+		
+		res = otaScheduleService.disableOTAScheduleByMac(mac);
+		
+		if (res.getResponseCode() == 404) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+		}else {
+			return ResponseEntity.ok(res);
+		}
+		
+	}
+	
+	@ApiOperation(tags={"OTA Schedule Management"}, value="Enable disabled OTA Schedule with tommorow")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully updated."),
+			@ApiResponse(code = 404, message = "se wrong parameter.")
+			})
+	@PutMapping("/otashceduletime/{mac}")
+	public ResponseEntity<CommonResponseDTO> enableOTASchedule(
+			@PathVariable String mac) {
+		
+		CommonResponseDTO res;
+		
+		res = otaScheduleService.enableOTAScheduleByMac(mac);
+		
+		if (res.getResponseCode() == 404) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+		}else {
+			return ResponseEntity.ok(res);
+		}
+		
+	}
+	
+	@ApiOperation(tags={"OTA Schedule Management"}, value="Retrieve All Disabled OTA Schedules")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully retrieved."),
+			@ApiResponse(code = 204, message = "No OTA Scheudle")
+			})
+	@GetMapping("/otaschedule/disabled")
+	public ResponseEntity<List<OTAScheduleDTO>> retrieveDisabledOTAScheduleByStaiton(){
+
+		List<OTAScheduleDTO> res = otaScheduleService.getAllDisabledOTASchedule();
+		
+		if (res.isEmpty()) return ResponseEntity.noContent().build();
+		else return ResponseEntity.ok(res);
 		
 	}
 	
