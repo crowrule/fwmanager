@@ -41,11 +41,13 @@ aimscore:
     username: browndwarf
     password: browndwarf
     type: com.zaxxer.hikari.HikariDataSource
-    
 ota:
   execute:
     duration:
-      starthour: 01
-      stophour: 05
+      starthour: 13
+      stophour: 17
     intervalminutes: 20  
-    
+  file:
+    upload:
+      url: /home/dohoon/Public
+      prefix: without_header_dev.

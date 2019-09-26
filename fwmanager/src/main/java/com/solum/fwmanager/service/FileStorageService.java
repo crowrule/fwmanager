@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,13 +40,20 @@ public class FileStorageService {
 	@Autowired
 	FirmwarePackageRepository	firmwarePackageRepository;	
 	
-    private final Path fileStorageLocation;
+    //private final Path fileStorageLocation;
     
     // TODO : Extract storage URL to property & rebuild it by tag type info 
     // TODO : Refine Configure
-    private final String uploadUrl = "/home/dohoon/Public";
-    private final String prefix = "without_header.";
+    // private final String uploadUrl = "/home/dohoon/Public";
+    // private final String prefix = "without_header.";
     
+    @Value("${ota.file.upload.url}")
+    private String uploadUrl;
+    
+    @Value("${ota.file.upload.prefix}")
+    private String uploadedPrefix;
+    
+    /*
 	public FileStorageService() {
     	this.fileStorageLocation = Paths.get(uploadUrl).toAbsolutePath().normalize();
 
@@ -57,6 +65,7 @@ public class FileStorageService {
 			ex.printStackTrace();
 		}
 	}
+	*/
 	
 	public CommonResponseDTO storeFile(MultipartFile file) {
 		
@@ -94,8 +103,12 @@ public class FileStorageService {
 								Arrays.copyOfRange(IOUtils.toByteArray(file.getInputStream())
 								, 32
 								, (int)originalSize));
-			String	encodedfileName = new StringBuilder(prefix).append(fileName).toString();
-			Path targetLocation = this.fileStorageLocation.resolve(encodedfileName);
+			String	encodedfileName = new StringBuilder(uploadedPrefix).append(fileName).toString();
+			Path targetLocation = Paths
+									.get(uploadUrl)
+									.toAbsolutePath()
+									.normalize()
+									.resolve(encodedfileName);
 			// TODO : Check whether UTF8 encoding should be removed or not.
 			long copySize = Files.copy(IOUtils.toInputStream(otaData, StandardCharsets.UTF_8)
 									, targetLocation
