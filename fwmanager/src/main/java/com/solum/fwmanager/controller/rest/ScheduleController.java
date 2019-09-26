@@ -1,18 +1,28 @@
 package com.solum.fwmanager.controller.rest;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.solum.fwmanager.dto.CommonResponseDTO;
 import com.solum.fwmanager.dto.OTAPackageDTO;
 import com.solum.fwmanager.dto.OTAScheduleDTO;
 import com.solum.fwmanager.dto.OTAStationScheduleDTO;
@@ -39,12 +49,15 @@ public class ScheduleController {
 	@Autowired
 	AimsService	aimsService;
 	
+	@Value("${ota.execute.minimumwaitminutes:0}")
+	private int	minimunWaitMinutes;
+	
 	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully reserved."),
 			@ApiResponse(code = 400, message = "Use wrong parameter.")
 			})
-	@PostMapping("/arrangeschedulebyfw/{packageId}")
+	@PostMapping("/otaschedulebyfw/{packageId}")
 	public ResponseEntity<List<OTAStationScheduleDTO>> arrangeOTASchedule(
 			@PathVariable String packageId
 			, @RequestBody List<String> stationList){
@@ -65,12 +78,12 @@ public class ScheduleController {
 		
 	}
 	
-	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
+	@ApiOperation(tags={"OTA Schedule"}, value="Retrieve OTA Schedules by station code")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully retrieved."),
 			@ApiResponse(code = 204, message = "No OTA Scheudle")
 			})
-	@GetMapping("/otaschedulelist/{stationCode}")
+	@GetMapping("/otaschedulebystation/{stationCode}")
 	public ResponseEntity<List<OTAScheduleDTO>> retrieveOTAScheduleByStaiton(
 			@PathVariable String stationCode){
 
@@ -81,12 +94,12 @@ public class ScheduleController {
 		
 	}
 	
-	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
+	@ApiOperation(tags={"OTA Schedule"}, value="Retrieve All OTA Schedules")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully retrieved."),
 			@ApiResponse(code = 204, message = "No OTA Scheudle")
 			})
-	@GetMapping("/otaschedulelistall")
+	@GetMapping("/otaschedule")
 	public ResponseEntity<List<OTAScheduleDTO>> retrieveAllOTAScheduleByStaiton(){
 
 		List<OTAScheduleDTO> res = otaScheduleService.getAllOTASchedule();
@@ -96,7 +109,7 @@ public class ScheduleController {
 		
 	}
 	
-	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
+	@ApiOperation(tags={"OTA Schedule"}, value="Only for interaction with GW")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Exist a adequate OTA package"),
 			@ApiResponse(code = 204, message = "No OTA package"),
@@ -105,12 +118,45 @@ public class ScheduleController {
 	@GetMapping("/otaschedulebygw/{mac}")
 	public ResponseEntity<OTAPackageDTO> getOTAScheduleFromGWbyMac(@PathVariable String mac){
 		
-		OTAPackageDTO	ret =  otaScheduleService.getOTAScheduleByMac(mac);
+		OTAPackageDTO	ret =  otaScheduleService.getOTAScheduleForGW(mac);
 		
 		if (ret == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		else if (ret.getCompSize() == 0) return ResponseEntity.noContent().build();
 		
 		return ResponseEntity.ok(ret);
+	}
+	
+	@ApiOperation(tags={"OTA Schedule"}, value="Modify OTA Schedule Time")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully updated."),
+			@ApiResponse(code = 404, message = "se wrong parameter.")
+			})
+	@PutMapping("/otashcedule/{mac}")
+	public ResponseEntity<CommonResponseDTO> updateOTASchedule(
+			@PathVariable String mac,
+			@RequestParam("newOtaTime")
+			@DateTimeFormat(iso=ISO.DATE_TIME) Date newOtaTime){
+		
+		LocalDateTime updatedTime = LocalDateTime.ofInstant(newOtaTime.toInstant(), ZoneId.systemDefault());
+		
+		log.info(">>>> Input Date : {}", updatedTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		
+		CommonResponseDTO res;
+		
+		if (LocalDateTime.now().plusMinutes(minimunWaitMinutes).isAfter(updatedTime)) {
+			res = new CommonResponseDTO(405, "UpdateTime should be later than request time.");
+			
+			return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(res);
+		}
+		
+		res = otaScheduleService.updateOTAScheduleByMac(mac, updatedTime);
+		
+		if (res.getResponseCode() == 404) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+		}else {
+			return ResponseEntity.ok(res);
+		}
+		
 	}
 	
 	/*
@@ -128,4 +174,10 @@ public class ScheduleController {
 		
 	}
 	*/
+	
+	@GetMapping(value = "/heartbeat", consumes="application/json")
+	public ResponseEntity<String> checkHeartBeat(){
+		
+		return ResponseEntity.ok("I'm alived");
+	}
 }

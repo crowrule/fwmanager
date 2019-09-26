@@ -2,6 +2,7 @@ package com.solum.fwmanager.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.solum.fwmanager.dto.CommonResponseDTO;
 import com.solum.fwmanager.dto.OTAPackageDTO;
 import com.solum.fwmanager.dto.OTAScheduleDTO;
 import com.solum.fwmanager.entity.FirmwarePackage;
@@ -28,7 +30,7 @@ public class OTAScheduleService {
 	@Autowired
 	OTAScheduleRepository	otaScheduleRepository;
 	
-	public OTAPackageDTO	getOTAScheduleByMac(String mac) {
+	public OTAPackageDTO	getOTAScheduleForGW(String mac) {
 		
 		Optional<OTASchedule>	opOTASchedule = otaScheduleRepository.findById(mac);
 		
@@ -87,6 +89,41 @@ public class OTAScheduleService {
 		return res;
 								
 	}
+	
+	public 	OTAScheduleDTO	getOTAScheduleByMac(String mac) {
+		OTAScheduleDTO res = otaScheduleRepository.findById(mac)
+				.map(entity->OTAScheduleDTO.builder()
+						.stationCode(entity.getStationCode())
+						.gwIp(entity.getGwIp())
+						.gwMac(entity.getGwMac())
+						.otaTime(entity.getOtaTime())
+						.build())
+				.orElse(null);
+				
+
+		return res;	
+	}
+
+	public 	CommonResponseDTO	updateOTAScheduleByMac(String mac, LocalDateTime updateTime) {
+		Optional<OTASchedule> opOtaSchedule = otaScheduleRepository.findById(mac);
+
+		if (!opOtaSchedule.isPresent()) {
+			return new CommonResponseDTO(404L, "Can't find OTA Schedule by mac");
+		}
+		
+		OTASchedule	updateOtaSchedule = opOtaSchedule.get();
+		updateOtaSchedule.setOtaTime(updateTime);
+		otaScheduleRepository.saveAndFlush(updateOtaSchedule);
+
+		String	msg = new StringBuilder("otaTime is updated to ")
+							.append(updateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+							.append(" for GW ; ")
+							.append(mac)
+							.toString();
+		
+		return new CommonResponseDTO(200L, msg);	
+	}
+	
 	
 	private OTAPackageDTO convertFromFirmwarePackageEntity(FirmwarePackage fwPackage) throws IOException {
 		OTAPackageDTO otaPackageDto = new OTAPackageDTO();
