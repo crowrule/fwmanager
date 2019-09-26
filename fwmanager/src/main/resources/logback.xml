@@ -24,7 +24,7 @@
 	    </rollingPolicy>
 		<encoder>
 			<charset>UTF-8</charset>
-			<pattern>[%d{HH:mm:ss.SSS}]%highlight([%-5level])[%green(%-15.15thread) / %cyan(%-60logger{0})] %msg%n</pattern>
+			<pattern>[%d{HH:mm:ss.SSS}]([%-5level])[(%-15.15thread) / (%-60logger{0})] %msg%n</pattern>
 		</encoder>
 	</appender>
 
