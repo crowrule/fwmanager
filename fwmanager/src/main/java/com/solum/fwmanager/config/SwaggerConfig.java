@@ -1,5 +1,9 @@
 package com.solum.fwmanager.config;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,9 +33,12 @@ public class SwaggerConfig {
     			.enable(swaggerEnable)
         		.groupName("default")
         		.select()
-        		.apis(RequestHandlerSelectors.basePackage("com.solum.fwmanager.controller.rest"))
-        		.paths(defaultPaths())
-        		.build()
+	        		.apis(RequestHandlerSelectors.basePackage("com.solum.fwmanager.controller.rest"))
+	        		.paths(defaultPaths())
+	        		.build()
+	            .directModelSubstitute(Date.class, String.class)        			
+	        	.directModelSubstitute(LocalDate.class, String.class)
+	        	.directModelSubstitute(LocalDateTime.class, String.class)
         		.apiInfo(getApiInfo())
         		.useDefaultResponseMessages(false)
         		.globalResponseMessage(RequestMethod.GET, 

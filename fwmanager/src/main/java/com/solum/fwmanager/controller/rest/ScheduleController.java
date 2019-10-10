@@ -1,16 +1,13 @@
 package com.solum.fwmanager.controller.rest;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.solum.fwmanager.dto.CommonResponseDTO;
@@ -133,25 +129,25 @@ public class ScheduleController {
 			@ApiResponse(code = 200, message = "Successfully updated."),
 			@ApiResponse(code = 404, message = "se wrong parameter.")
 			})
-	@PatchMapping("/otashceduletime/{mac}")
+	@PatchMapping("/otashceduletime/{mac}/{newOtaTime}")
 	public ResponseEntity<CommonResponseDTO> updateOTASchedule(
 			@PathVariable String mac,
-			@RequestParam("newOtaTime")
-			@DateTimeFormat(iso=ISO.DATE_TIME) Date newOtaTime){
+			@PathVariable("newOtaTime") 
+			@DateTimeFormat(pattern="yyyyMMddHHmmss") LocalDateTime newOtaTime){
 		
-		LocalDateTime updatedTime = LocalDateTime.ofInstant(newOtaTime.toInstant(), ZoneId.systemDefault());
+		//LocalDateTime updatedTime = LocalDateTime.ofInstant(newOtaTime.toInstant(), ZoneId.systemDefault());
 		
-		log.info(">>>> Input Date : {}", updatedTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		log.info(">>>> Input Date : {}", newOtaTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		
 		CommonResponseDTO res;
 		
-		if (LocalDateTime.now().plusMinutes(minimunWaitMinutes).isAfter(updatedTime)) {
+		if (LocalDateTime.now().plusMinutes(minimunWaitMinutes).isAfter(newOtaTime)) {
 			res = new CommonResponseDTO(405, "UpdateTime should be later than request time.");
 			
 			return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(res);
 		}
 		
-		res = otaScheduleService.updateOTAScheduleByMac(mac, updatedTime);
+		res = otaScheduleService.updateOTAScheduleByMac(mac, newOtaTime);
 		
 		if (res.getResponseCode() == 404) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
