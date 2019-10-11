@@ -53,7 +53,8 @@ public class ScheduleController {
 	@ApiOperation(tags={"OTA Schedule"}, value="Arrange OTA Schedule for multiple stations")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Successfully reserved."),
-			@ApiResponse(code = 400, message = "Use wrong parameter.")
+			@ApiResponse(code = 400, message = "Use wrong parameter."),
+			@ApiResponse(code = 404, message = "There is no adaquate package.")
 			})
 	@PostMapping("/otaschedulebyfw/{packageId}")
 	public ResponseEntity<List<OTAStationScheduleDTO>> arrangeOTASchedule(
@@ -72,7 +73,8 @@ public class ScheduleController {
 		}).filter(dto->(dto!=null))
 		.collect(Collectors.toList());
 		
-		return ResponseEntity.ok(res);
+		if (res.isEmpty()) return ResponseEntity.notFound().build();
+		else return ResponseEntity.ok(res);
 		
 	}
 	
@@ -230,7 +232,7 @@ public class ScheduleController {
 	}
 	*/
 	
-	@GetMapping(value = "/heartbeat", consumes="application/json")
+	@GetMapping(value = "/heartbeat")
 	public ResponseEntity<String> checkHeartBeat(){
 		
 		return ResponseEntity.ok("I'm alived");
